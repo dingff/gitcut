@@ -1,0 +1,25 @@
+{
+  "name": "gitcut",
+  "version": "0.1.0",
+  "description": "shortcuts for git",
+  "main": "index.js",
+  "type": "module",
+  "repository": "dingff/gitcut",
+  "bin": {
+    "gt": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "git",
+    "npm",
+    "node"
+  ],
+  "author": "dingff",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "ora": "^6.1.2"
+  }
+}
