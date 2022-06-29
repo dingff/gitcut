@@ -28,7 +28,7 @@ const startChildProcess = (command, params) => {
     process.on('close', (data) => {
       if (data) {
         spinner.fail();
-        console.log(`${WARN}Uh, something blocked. Run ’${info(cmd)}‘ to view specific logs.`);
+        console.log(`${WARN}Uh, something blocked. Run ‘${info(cmd)}’ to view specific logs.`);
         reject();
       } else {
         spinner.succeed();
@@ -40,7 +40,7 @@ const startChildProcess = (command, params) => {
 
 const handles = {
   '-v': () => {
-    return console.log('0.1.0');
+    return console.log('0.1.1');
   },
   query: async () => {
     try {
