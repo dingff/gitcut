@@ -4,7 +4,7 @@ shortcuts for git
 
 ## Install
 ```
-$ npm install -g gitcut
+npm install -g gitcut
 ```
 
 ## Usage
