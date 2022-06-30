@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import ora from 'ora';
 import chalk from 'chalk';
 
-const version = '1.1.2';
+const version = '1.2.0';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -72,14 +72,27 @@ const handles = {
     } catch (err) {}
   },
   submit: async () => {
+    const commitEmoji = {
+      feat: ':sparkles:',
+      fix: ':bug:',
+      docs: ':memo:',
+      style: ':lipstick:',
+      refactor: ':hammer:',
+      perf: ':zap:',
+      test: ':white_check_mark:',
+      chore: ':construction_worker:',
+      delete: ':fire:',
+    }
     try {
       const [msg] = args;
+      const commitType = msg.split(':')[0];
+      const emoji = commitEmoji[commitType] || '';
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
       await startSpawn('git', ['add', '.']);
-      await startSpawn('git', ['commit', '-m', msg]);
+      await startSpawn('git', ['commit', '-m', `${emoji}${msg}`]);
       await startSpawn('git', ['pull']);
       await startSpawn('git', ['push']);
       console.log(`${OK}Success!`);
