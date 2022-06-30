@@ -3,6 +3,7 @@ import { spawn } from 'child_process';
 import ora from 'ora';
 import chalk from 'chalk';
 
+const version = '1.1.0';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -20,20 +21,25 @@ const args = process.argv.slice(3);
 const startSpawn = (command, params) => {
   return new Promise((resolve, reject) => {
     const cmd = `${command} ${params.join(' ')}`; // 当前执行的命令
-    const spinner = ora(cmd).start(); // 开始状态 => 加载状态
-    let output; // 输出
+    const spinner = ora(cmd).start();
+    let stdoutData = '';
+    let stderrData = '';
     const process = spawn(command, params);
     process.stdout.on('data', (data) => {
-      output = data && data.toString();
+      stdoutData = `${stdoutData}${data}`;
+    });
+    process.stderr.on('data', (data) => {
+      stderrData = `${stderrData}${data}`;
     });
     process.on('close', (data) => {
       if (data) {
         spinner.fail();
-        console.log(`${WARN}Uh, something blocked. Run "${info(cmd)}" to see a complete log.`);
+        console.log(`${WARN}Uh, something blocked.`);
+        console.log(`\n${stderrData}`);
         reject();
       } else {
         spinner.succeed();
-        resolve(output);
+        resolve(stdoutData);
       }
     });
   });
@@ -41,7 +47,7 @@ const startSpawn = (command, params) => {
 
 const handles = {
   '-v': () => {
-    return console.log('1.0.0');
+    return console.log(version);
   },
   query: async () => {
     try {
