@@ -10,13 +10,14 @@ const [error, warning, success, info, gray] = [
   chalk.bold.blue,
   chalk.gray
 ]
-const WARN = `${gray('[')}${warning('WARN')}${gray(']')} `;
-const ERROR = `${gray('[')}${error('ERROR')}${gray(']')} `;
-const OK = `${gray('[')}${success('OK')}${gray(']')} `;
+const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `;
+const WARN = getHintPre(warning('WARN'));
+const ERROR = getHintPre(error('ERROR'));
+const OK = getHintPre(success('OK'));
 
 const cmdType = process.argv[2];
 const args = process.argv.slice(3);
-const startChildProcess = (command, params) => {
+const startSpawn = (command, params) => {
   return new Promise((resolve, reject) => {
     const cmd = `${command} ${params.join(' ')}`; // 当前执行的命令
     const spinner = ora(cmd).start(); // 开始状态 => 加载状态
@@ -28,7 +29,7 @@ const startChildProcess = (command, params) => {
     process.on('close', (data) => {
       if (data) {
         spinner.fail();
-        console.log(`${WARN}Uh, something blocked. Run "${info(cmd)}" for more details.`);
+        console.log(`${WARN}Uh, something blocked. Run "${info(cmd)}" to see a complete log.`);
         reject();
       } else {
         spinner.succeed();
@@ -40,7 +41,7 @@ const startChildProcess = (command, params) => {
 
 const handles = {
   '-v': () => {
-    return console.log('0.1.2');
+    return console.log('1.0.0');
   },
   query: async () => {
     try {
@@ -50,16 +51,16 @@ const handles = {
         console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`);
         return;
       }
-      const r = await startChildProcess('git', ['remote']);
-      if (r.includes(remoteAlias)) await startChildProcess('git', ['remote', 'rm', remoteAlias]);
-      await startChildProcess('git', ['remote', 'add', remoteAlias, remoteUrl]);
-      await startChildProcess('git', ['fetch', remoteAlias, branch]);
+      const r = await startSpawn('git', ['remote']);
+      if (r.includes(remoteAlias)) await startSpawn('git', ['remote', 'rm', remoteAlias]);
+      await startSpawn('git', ['remote', 'add', remoteAlias, remoteUrl]);
+      await startSpawn('git', ['fetch', remoteAlias, branch]);
       if (paths[0]) {
-        await startChildProcess('git', ['checkout', `${remoteAlias}/${branch}`, ...paths]);
+        await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...paths]);
       } else {
-        await startChildProcess('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories']);
+        await startSpawn('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories']);
       }
-      await startChildProcess('git', ['remote', 'rm', remoteAlias]);
+      await startSpawn('git', ['remote', 'rm', remoteAlias]);
       console.log(`${OK}Success!`);
     } catch (err) {}
   },
@@ -70,12 +71,12 @@ const handles = {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
-      await startChildProcess('git', ['add', '.']);
-      await startChildProcess('git', ['commit', '-m', msg]);
-      await startChildProcess('git', ['pull']);
-      await startChildProcess('git', ['push']);
+      await startSpawn('git', ['add', '.']);
+      await startSpawn('git', ['commit', '-m', msg]);
+      await startSpawn('git', ['pull']);
+      await startSpawn('git', ['push']);
       console.log(`${OK}Success!`);
     } catch (err) {}
   },
 };
-handles[cmdType] ? handles[cmdType]() : startChildProcess('git', [cmdType, ...args]).catch(() => {});
+handles[cmdType] ? handles[cmdType]() : startSpawn('git', [cmdType, ...args]).catch(() => {});

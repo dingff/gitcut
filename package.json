@@ -1,6 +1,6 @@
 {
   "name": "gitcut",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "shortcuts for git",
   "main": "index.js",
   "type": "module",
