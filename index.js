@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import ora from 'ora';
 import chalk from 'chalk';
 
-const version = '1.1.0';
+const version = '1.1.1';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -36,9 +36,10 @@ const startSpawn = (command, params) => {
         spinner.fail();
         console.log(`${WARN}Uh, something blocked.`);
         console.log(`\n${stderrData}`);
-        reject();
+        reject(stderrData);
       } else {
         spinner.succeed();
+        console.log(`\n${stdoutData}`);
         resolve(stdoutData);
       }
     });
