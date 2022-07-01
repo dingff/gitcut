@@ -3,7 +3,7 @@ import { spawn } from 'child_process';
 import ora from 'ora';
 import chalk from 'chalk';
 
-const version = '1.2.0';
+const version = '1.2.4';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -35,7 +35,7 @@ const startSpawn = (command, params) => {
       if (data) {
         spinner.fail();
         console.log(`${WARN}Uh, something blocked.`);
-        console.log(`\n${stderrData}`);
+        console.log(`\n${stderrData || stdoutData}`);
         reject(stderrData);
       } else {
         spinner.succeed();
@@ -72,7 +72,7 @@ const handles = {
     } catch (err) {}
   },
   submit: async () => {
-    const commitEmoji = {
+    const emojis = {
       feat: ':sparkles:',
       fix: ':bug:',
       docs: ':memo:',
@@ -86,13 +86,13 @@ const handles = {
     try {
       const [msg] = args;
       const commitType = msg.split(':')[0];
-      const emoji = commitEmoji[commitType] || '';
+      const commitEmoji = emojis[commitType] || '';
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
       await startSpawn('git', ['add', '.']);
-      await startSpawn('git', ['commit', '-m', `${emoji}${msg}`]);
+      await startSpawn('git', ['commit', '-m', `${commitEmoji}${msg}`]);
       await startSpawn('git', ['pull']);
       await startSpawn('git', ['push']);
       console.log(`${OK}Success!`);
