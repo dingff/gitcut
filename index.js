@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
 
-const version = '1.2.7';
+const version = '1.2.8';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -31,16 +31,16 @@ const startSpawn = (command, params) => {
       stderrData = `${stderrData}${data}`;
     });
     process.on('close', (data) => {
-      if (stderrData) {
+      if (data) {
         spinner.fail();
         console.log(`${WARN}Uh, something blocked.`);
-        console.log(`\n${stderrData}`);
         reject(stderrData);
       } else {
         spinner.succeed();
-        if (stdoutData) console.log(`\n${stdoutData}`);
         resolve(stdoutData);
       }
+      if (stderrData) console.log(`\n${stderrData}`);
+      if (stdoutData) console.log(`\n${stdoutData}`);
     });
   });
 };
