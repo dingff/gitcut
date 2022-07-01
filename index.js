@@ -1,9 +1,8 @@
-#!/usr/bin/env node
-import { spawn } from 'child_process';
-import ora from 'ora';
-import chalk from 'chalk';
+const { spawn } = require('child_process');
+const ora = require('ora');
+const chalk = require('chalk');
 
-const version = '1.2.4';
+const version = '1.2.7';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -32,10 +31,10 @@ const startSpawn = (command, params) => {
       stderrData = `${stderrData}${data}`;
     });
     process.on('close', (data) => {
-      if (data) {
+      if (stderrData) {
         spinner.fail();
         console.log(`${WARN}Uh, something blocked.`);
-        console.log(`\n${stderrData || stdoutData}`);
+        console.log(`\n${stderrData}`);
         reject(stderrData);
       } else {
         spinner.succeed();

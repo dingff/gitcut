@@ -1,12 +1,11 @@
 {
   "name": "gitcut",
-  "version": "1.2.4",
+  "version": "1.2.7",
   "description": "shortcuts for git",
   "main": "index.js",
-  "type": "module",
   "repository": "dingff/gitcut",
   "bin": {
-    "gt": "index.js"
+    "gt": "./bin/index"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -19,7 +18,7 @@
   "author": "dingff",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.0.1",
-    "ora": "^6.1.2"
+    "chalk": "^4.1.2",
+    "ora": "^5.4.1"
   }
 }
