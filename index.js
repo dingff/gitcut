@@ -79,7 +79,7 @@ const handles = {
       refactor: ':hammer:',
       perf: ':zap:',
       test: ':white_check_mark:',
-      chore: ':construction_worker:',
+      chore: ':wrench:',
       delete: ':fire:',
     }
     try {
