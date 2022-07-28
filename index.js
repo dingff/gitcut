@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
 
-const version = '1.2.8';
+const version = '1.3.1';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -83,7 +83,7 @@ const handles = {
       delete: ':fire:',
     }
     try {
-      const [msg] = args;
+      const msg = args.join(' ');
       const commitType = msg.split(':')[0];
       const commitEmoji = emojis[commitType] || '';
       if (!msg) {
