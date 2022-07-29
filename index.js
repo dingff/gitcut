@@ -2,7 +2,7 @@ const { spawn } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
 
-const version = '1.3.1';
+const version = '1.3.2';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
