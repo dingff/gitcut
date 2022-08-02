@@ -23,15 +23,15 @@ const startSpawn = (command, params) => {
     const spinner = ora(cmd).start();
     let stdoutData = '';
     let stderrData = '';
-    const process = spawn(command, params);
-    process.stdout.on('data', (data) => {
+    const subprocess = spawn(command, params);
+    subprocess.stdout.on('data', (data) => {
       stdoutData = `${stdoutData}${data}`;
     });
-    process.stderr.on('data', (data) => {
+    subprocess.stderr.on('data', (data) => {
       stderrData = `${stderrData}${data}`;
     });
-    process.on('close', (data) => {
-      if (data) {
+    subprocess.on('close', (code) => {
+      if (code !== 0) {
         spinner.fail();
         console.log(`${WARN}Uh, something blocked.`);
         reject(stderrData);
@@ -39,8 +39,8 @@ const startSpawn = (command, params) => {
         spinner.succeed();
         resolve(stdoutData);
       }
-      if (stderrData) console.log(`\n${stderrData}`);
-      if (stdoutData) console.log(`\n${stdoutData}`);
+      if (stderrData) process.stdout.write(stderrData);
+      if (stdoutData) process.stdout.write(stdoutData);
     });
   });
 };
