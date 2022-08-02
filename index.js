@@ -1,8 +1,10 @@
 const { spawn } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
+const fs = require('fs');
+const path = require('path');
 
-const version = '1.3.2';
+const version = '1.4.0';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -15,15 +17,12 @@ const WARN = getHintPre(warning('WARN'));
 const ERROR = getHintPre(error('ERROR'));
 const OK = getHintPre(success('OK'));
 
-const cmdType = process.argv[2];
-const args = process.argv.slice(3);
-const startSpawn = (command, params) => {
+const startSpawn = (c, p) => {
   return new Promise((resolve, reject) => {
-    const cmd = `${command} ${params.join(' ')}`; // 当前执行的命令
-    const spinner = ora(cmd).start();
+    const spinner = ora(`${c} ${p.join(' ')}`).start();
     let stdoutData = '';
     let stderrData = '';
-    const subprocess = spawn(command, params);
+    const subprocess = spawn(c, p);
     subprocess.stdout.on('data', (data) => {
       stdoutData = `${stdoutData}${data}`;
     });
@@ -44,15 +43,30 @@ const startSpawn = (command, params) => {
     });
   });
 };
-
+const cmdType = process.argv[2];
+const args = process.argv.slice(3);
+const configPath = path.join(process.cwd(), 'gtconfig.json');
+// 获取不同命令的本地配置
+const getConfig = () => {
+  if (!fs.existsSync(configPath)) return
+  const config = fs.readFileSync(configPath, 'utf8');
+  if (config) return JSON.parse(config)[cmdType];
+}
 const handles = {
   '-v': () => {
     return console.log(version);
   },
+  '--init': () => {
+    if (fs.existsSync(configPath)) return;
+    const defaultConfig = fs.readFileSync('./config.json', 'utf8');
+    fs.writeFileSync(configPath, defaultConfig);
+  },
   query: async () => {
     try {
       const remoteAlias = 'gitcut';
-      const [remoteUrl, branch, ...paths] = args;
+      let [remoteUrl, branch, ...paths] = args;
+      const alias = getConfig();
+      if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl]);
       if(!remoteUrl || !branch) {
         console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`);
         return;
@@ -61,7 +75,7 @@ const handles = {
       if (r.includes(remoteAlias)) await startSpawn('git', ['remote', 'rm', remoteAlias]);
       await startSpawn('git', ['remote', 'add', remoteAlias, remoteUrl]);
       await startSpawn('git', ['fetch', remoteAlias, branch]);
-      if (paths[0]) {
+      if (paths?.[0]) {
         await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...paths]);
       } else {
         await startSpawn('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories']);
