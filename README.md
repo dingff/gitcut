@@ -17,7 +17,7 @@ gt --init
 // 直接使用
 gt query <remoteUrl> <branch> [paths]
 
-// 在配置文件中配置后就可以使用别名了
+// 使用别名（需在配置文件中配置）
 gt query <alias>
 ```
 

@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.1';
+const version = '1.4.2';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
