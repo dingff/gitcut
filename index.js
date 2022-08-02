@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.0';
+const version = '1.4.1';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -58,7 +58,7 @@ const handles = {
   },
   '--init': () => {
     if (fs.existsSync(configPath)) return;
-    const defaultConfig = fs.readFileSync('./config.json', 'utf8');
+    const defaultConfig = fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8');
     fs.writeFileSync(configPath, defaultConfig);
   },
   query: async () => {
