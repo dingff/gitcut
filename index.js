@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.2';
+const version = '1.4.3';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -32,7 +32,7 @@ const startSpawn = (c, p) => {
     subprocess.on('close', (code) => {
       if (code !== 0) {
         spinner.fail();
-        console.log(`${WARN}Uh, something blocked.`);
+        console.log(`${WARN}Uh, something went wrong.`);
         reject(stderrData);
       } else {
         spinner.succeed();
