@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.3';
+const version = '1.4.4';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -89,7 +89,7 @@ const handles = {
       feat: ':sparkles:',
       fix: ':bug:',
       docs: ':memo:',
-      style: ':lipstick:',
+      style: ':art:',
       refactor: ':hammer:',
       perf: ':zap:',
       test: ':white_check_mark:',
@@ -99,7 +99,7 @@ const handles = {
     try {
       const msg = args.join(' ');
       const commitType = msg.split(':')[0];
-      const commitEmoji = emojis[commitType] || '';
+      const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
