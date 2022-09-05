@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.4';
+const version = '1.4.5';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -105,7 +105,7 @@ const handles = {
         return;
       }
       await startSpawn('git', ['add', '.']);
-      await startSpawn('git', ['commit', '-m', `${commitEmoji}${msg}`]);
+      await startSpawn('git', ['commit', '-m', `${commitEmoji} ${msg}`]);
       await startSpawn('git', ['pull']);
       await startSpawn('git', ['push']);
       console.log(`${OK}Success!`);
