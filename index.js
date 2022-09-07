@@ -1,10 +1,10 @@
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const ora = require('ora');
 const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.5';
+const version = '1.4.6';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -18,6 +18,13 @@ const ERROR = getHintPre(error('ERROR'));
 const OK = getHintPre(success('OK'));
 
 const startSpawn = (c, p) => {
+  return new Promise((resolve, reject) => {
+    ora(`${c} ${p.join(' ')}`).succeed();
+    const subprocess = spawnSync(c, p, { stdio: 'inherit' });
+    subprocess.status !== 0 ? reject() : resolve();
+  })
+};
+const startSpawnPipe = (c, p) => {
   return new Promise((resolve, reject) => {
     const spinner = ora(`${c} ${p.join(' ')}`).start();
     let stdoutData = '';
@@ -71,7 +78,7 @@ const handles = {
         console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`);
         return;
       }
-      const r = await startSpawn('git', ['remote']);
+      const r = await startSpawnPipe('git', ['remote']);
       if (r.includes(remoteAlias)) await startSpawn('git', ['remote', 'rm', remoteAlias]);
       await startSpawn('git', ['remote', 'add', remoteAlias, remoteUrl]);
       await startSpawn('git', ['fetch', remoteAlias, branch]);
@@ -98,12 +105,12 @@ const handles = {
     }
     try {
       const msg = args.join(' ');
-      const commitType = msg.split(':')[0];
-      const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
+      const commitType = msg.split(':')[0];
+      const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
       await startSpawn('git', ['add', '.']);
       await startSpawn('git', ['commit', '-m', `${commitEmoji} ${msg}`]);
       await startSpawn('git', ['pull']);
