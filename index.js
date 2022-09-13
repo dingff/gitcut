@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.7';
+const version = '1.4.8';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -101,7 +101,7 @@ const handles = {
       perf: ':zap:',
       test: ':white_check_mark:',
       chore: ':wrench:',
-      delete: ':fire:',
+      rm: ':fire:',
     }
     try {
       const msg = args.join(' ');
