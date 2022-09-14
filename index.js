@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.5.0';
+const version = '1.5.1';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -115,7 +115,8 @@ const handles = {
       if (msgToken.length > 1) {
         const [commitType, commitInfo] = msgToken;
         const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
-        msg = `${commitType}: ${commitEmoji} ${commitInfo}`;
+        const space = commitEmoji ? ' ' : '';
+        msg = `${commitType}: ${commitEmoji}${space}${commitInfo}`;
       }
       await startSpawn('git', ['add', '.']);
       await startSpawn('git', ['commit', '-m', msg]);
