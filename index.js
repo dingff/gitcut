@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.4.8';
+const version = '1.5.0';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -101,19 +101,24 @@ const handles = {
       perf: ':zap:',
       test: ':white_check_mark:',
       chore: ':wrench:',
+      ci: ':green_heart:',
+      revert: ':rewind:',
       rm: ':fire:',
     }
     try {
-      const msg = args.join(' ');
+      let msg = args.join(' ');
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
-      const commitType = msg.split(':')[0];
-      const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
-      const space = commitEmoji ? ' ' : '';
+      const msgToken = msg.split(': ');
+      if (msgToken.length > 1) {
+        const [commitType, commitInfo] = msgToken;
+        const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
+        msg = `${commitType}: ${commitEmoji} ${commitInfo}`;
+      }
       await startSpawn('git', ['add', '.']);
-      await startSpawn('git', ['commit', '-m', `${commitEmoji}${space}${msg}`]);
+      await startSpawn('git', ['commit', '-m', msg]);
       await startSpawn('git', ['pull']);
       await startSpawn('git', ['push']);
       console.log(`${OK}Success!`);
