@@ -5,5 +5,8 @@
       "branch": "",
       "paths": []
     }
+  },
+  "submit": {
+    "emoji": false
   }
 }

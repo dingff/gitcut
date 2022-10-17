@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const fs = require('fs');
 const path = require('path');
 
-const version = '1.5.1';
+const version = '1.5.2';
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -106,13 +106,14 @@ const handles = {
       rm: ':fire:',
     }
     try {
+      const submitConfig = getConfig();
       let msg = args.join(' ');
       if (!msg) {
         console.log(`${ERROR}Usage: gt submit <msg>`);
         return;
       }
       const msgToken = msg.split(': ');
-      if (msgToken.length > 1) {
+      if (msgToken.length > 1 && submitConfig?.emoji === true) {
         const [commitType, commitInfo] = msgToken;
         const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || '';
         const space = commitEmoji ? ' ' : '';

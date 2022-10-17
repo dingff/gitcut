@@ -21,7 +21,7 @@ gt query <remoteUrl> <branch> [paths]
 gt query <alias>
 ```
 
-提交工作区所有内容，如果遵循正确的提交规范，提交信息还会自动加上 emoji 😈
+提交工作区所有内容。遵循提交规范，提交信息会自动加上 emoji 😈（需在配置文件中配置）
 ```
 gt submit <msg>
 ```
