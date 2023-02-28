@@ -1,6 +1,6 @@
 {
   "name": "gitcut",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "Shortcuts for git",
   "main": "index.js",
   "repository": "dingff/gitcut",
