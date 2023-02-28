@@ -3,7 +3,7 @@
     "main": {
       "remoteUrl": "",
       "branch": "",
-      "paths": []
+      "paths": ["src"]
     }
   },
   "submit": {
