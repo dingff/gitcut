@@ -8,6 +8,7 @@
     "gt": "./bin/index"
   },
   "scripts": {
+    "release": "release-it",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -20,5 +21,9 @@
   "dependencies": {
     "chalk": "^4.1.2",
     "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@release-it/conventional-changelog": "^5.1.1",
+    "release-it": "^15.7.0"
   }
 }
