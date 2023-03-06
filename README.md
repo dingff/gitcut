@@ -22,7 +22,7 @@ gt query <remoteUrl> <branch> [paths]
 gt query <alias>
 ```
 #### 提交工作区所有内容
-遵循提交规范，提交信息会自动加上 emoji 😈（需在配置文件中配置）
+遵循 angular 提交规范，提交信息会自动加上 emoji 😈（需在配置文件中配置）
 ```
 gt submit <msg>
 ```
