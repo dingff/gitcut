@@ -4,7 +4,6 @@ const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
 
-const version = '1.5.3'
 const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
@@ -61,6 +60,7 @@ const getConfig = () => {
 }
 const handles = {
   '-v': () => {
+    const version = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version
     return console.log(version)
   },
   '--init': () => {
