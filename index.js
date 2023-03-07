@@ -103,7 +103,6 @@ const handles = {
       chore: ':wrench:',
       ci: ':green_heart:',
       revert: ':rewind:',
-      rm: ':fire:',
     }
     try {
       const submitConfig = getConfig()
