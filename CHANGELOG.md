@@ -1,5 +1,12 @@
 
 
+## [1.5.5](https://github.com/dingff/gitcut/compare/v1.5.4...v1.5.5) (2023-03-07)
+
+
+### Bug Fixes
+
+* **type:** remove rm ([ac5bf0b](https://github.com/dingff/gitcut/commit/ac5bf0b191da08f529b361cc815bd6c947798b83))
+
 ## [1.5.4](https://github.com/dingff/gitcut/compare/v1.5.3...v1.5.4) (2023-03-06)
 
 
