@@ -8,7 +8,7 @@
     "gt": "./bin/index"
   },
   "scripts": {
-    "release": "release-it",
+    "release": "release-it --only-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [

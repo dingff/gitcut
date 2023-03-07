@@ -4,7 +4,10 @@
   },
   "github": {
     "release": true,
-    "releaseName": "${version}"
+    "releaseName": "v${version}"
+  },
+  "npm": {
+    "publish": false
   },
   "plugins": {
     "@release-it/conventional-changelog": {
