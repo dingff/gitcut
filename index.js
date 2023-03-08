@@ -61,7 +61,7 @@ const getConfig = () => {
 const handles = {
   '-v': () => {
     const version = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version
-    return console.log(version)
+    console.log(version)
   },
   '--init': () => {
     if (fs.existsSync(configPath)) return
