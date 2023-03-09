@@ -14,7 +14,10 @@
   "keywords": [
     "git",
     "npm",
-    "node"
+    "node",
+    "shortcut",
+    "submit",
+    "query"
   ],
   "author": "dingff",
   "license": "MIT",
