@@ -1,5 +1,12 @@
 
 
+## [1.6.1](https://github.com/dingff/gitcut/compare/v1.6.0...v1.6.1) (2023-03-09)
+
+
+### Reverts
+
+* recommend global config pull.rebase ([c83a972](https://github.com/dingff/gitcut/commit/c83a97205f633a0815f9c00f5689e3222699e16e))
+
 # [1.6.0](https://github.com/dingff/gitcut/compare/v1.5.5...v1.6.0) (2023-03-09)
 
 
