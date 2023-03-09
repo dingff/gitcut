@@ -4,13 +4,7 @@ const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
 
-const [error, warning, success, info, gray] = [
-  chalk.bold.red,
-  chalk.bold.yellow,
-  chalk.bold.green,
-  chalk.bold.blue,
-  chalk.gray
-]
+const [error, warning, success, info, gray] = [chalk.bold.red, chalk.bold.yellow, chalk.bold.green, chalk.bold.blue, chalk.gray]
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
 const ERROR = getHintPre(error('ERROR'))
@@ -74,7 +68,7 @@ const handles = {
       let [remoteUrl, branch, ...paths] = args
       const alias = getConfig()
       if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
-      if(!remoteUrl || !branch) {
+      if (!remoteUrl || !branch) {
         console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`)
         return
       }
