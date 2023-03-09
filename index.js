@@ -114,7 +114,7 @@ const handles = {
       }
       await startSpawn('git', ['add', '.'])
       await startSpawn('git', ['commit', '-m', msg])
-      await startSpawn('git', ['pull', '--rebase'])
+      await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
       console.log(`${OK}Success!`)
     } catch (err) {}
