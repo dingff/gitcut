@@ -2,28 +2,29 @@
 
 Shortcuts for git
 
-## 安装
+## Install
 ```
 npm install -g gitcut
 ```
 
-## 使用
-#### 生成配置文件
+## Usage
+#### --init
+Generate configuration file.
 ```
 gt --init
 ```
-#### 拉取远程源代码（通常用于从模版项目拉取更新）
-直接使用
+#### query
+Pull from a specified repository. It is helpful when you want to sync updates from the template project. You can directly use it like this.
 ```
 gt query <remoteUrl> <branch> [paths]
 ```
-使用别名（需在配置文件中配置）
+Or use alias, which needs to be configured in the configuration file.
 ```
 gt query <alias>
 ```
-#### 提交工作区所有内容
-遵循 angular 提交规范，提交信息会自动加上 emoji 😈（需在配置文件中配置）
+#### submit
+Submit all changes in the working space. Following the [Angular commit convention](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit), the commit message will automatically add emoji 😈. You need to enable it in the configuration file, as it is turned off by default.
 ```
 gt submit <msg>
 ```
-此外，gt 兼容 git 的所有命令 🎉🎉🎉
+In addition, gt is compatible with all git commands 🎉🎉🎉.
