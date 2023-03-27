@@ -1,5 +1,12 @@
 
 
+## [1.6.3](https://github.com/dingff/gitcut/compare/v1.6.2...v1.6.3) (2023-03-27)
+
+
+### Features
+
+* **submit:** add build type ([294b125](https://github.com/dingff/gitcut/commit/294b125056448eb466903a87bbb6ae5c20e54846))
+
 ## [1.6.2](https://github.com/dingff/gitcut/compare/v1.6.1...v1.6.2) (2023-03-09)
 
 
