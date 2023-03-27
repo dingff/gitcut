@@ -8,12 +8,12 @@ npm install -g gitcut
 ```
 
 ## Usage
-#### --init
+### --init
 Generate configuration file.
 ```
 gt --init
 ```
-#### query
+### query
 Pull from a specified repository. It is helpful when you want to sync updates from the template project. You can directly use it like this.
 ```
 gt query <remoteUrl> <branch> [paths]
@@ -22,8 +22,8 @@ Or use alias, which needs to be configured in the configuration file.
 ```
 gt query <alias>
 ```
-#### submit
-Submit all changes in the working space. Following the [Angular commit convention](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit), the commit message will automatically add emoji 😈. You need to enable it in the configuration file, as it is turned off by default.
+### submit
+Submit all changes in the working space. Following the [commitlint-config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional#type-enum) types, the commit message will automatically include emoji 😈. But you need to enable it in the configuration file, as it is turned off by default.
 ```
 gt submit <msg>
 ```
