@@ -1,5 +1,12 @@
 
 
+## [1.7.1](https://github.com/dingff/gitcut/compare/v1.7.0...v1.7.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* **query:** should not remove remote when using exist ([4585ff3](https://github.com/dingff/gitcut/commit/4585ff3fb0ad4c7fed987b496bbd8b481dbf1bde))
+
 # [1.7.0](https://github.com/dingff/gitcut/compare/v1.6.5...v1.7.0) (2023-03-28)
 
 
