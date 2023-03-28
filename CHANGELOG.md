@@ -1,5 +1,12 @@
 
 
+# [1.7.0](https://github.com/dingff/gitcut/compare/v1.6.5...v1.7.0) (2023-03-28)
+
+
+### Features
+
+* **query:** support remote name ([fca1c0c](https://github.com/dingff/gitcut/commit/fca1c0c3ae63cc1b3b82f378d8f48a8d09e7636c))
+
 ## [1.6.5](https://github.com/dingff/gitcut/compare/v1.6.4...v1.6.5) (2023-03-28)
 
 
