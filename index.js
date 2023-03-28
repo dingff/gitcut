@@ -85,7 +85,7 @@ const handles = {
       } else {
         await startSpawn('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories'])
       }
-      await startSpawn('git', ['remote', 'rm', remoteAlias])
+      if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
       console.log(`${OK}Success!`)
     } catch (err) {}
   },
