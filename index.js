@@ -64,7 +64,7 @@ const handles = {
   },
   query: async () => {
     try {
-      const remoteAlias = 'gitcut'
+      let remoteAlias = 'gitcut'
       let [remoteUrl, branch, ...paths] = args
       const alias = getConfig()
       if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
@@ -72,9 +72,13 @@ const handles = {
         console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`)
         return
       }
-      const r = await startSpawnPipe('git', ['remote'])
-      if (r.includes(remoteAlias)) await startSpawn('git', ['remote', 'rm', remoteAlias])
-      await startSpawn('git', ['remote', 'add', remoteAlias, remoteUrl])
+      if (remoteUrl.startsWith('https://') || remoteUrl.startsWith('git@')) {
+        const r = await startSpawnPipe('git', ['remote'])
+        if (r.includes(remoteAlias)) await startSpawn('git', ['remote', 'rm', remoteAlias])
+        await startSpawn('git', ['remote', 'add', remoteAlias, remoteUrl])
+      } else {
+        remoteAlias = remoteUrl
+      }
       await startSpawn('git', ['fetch', remoteAlias, branch])
       if (paths?.[0]) {
         await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...paths])
