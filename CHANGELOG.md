@@ -1,5 +1,12 @@
 
 
+## [1.6.5](https://github.com/dingff/gitcut/compare/v1.6.4...v1.6.5) (2023-03-28)
+
+
+### Bug Fixes
+
+* add description in readme ([1b2d830](https://github.com/dingff/gitcut/commit/1b2d830a446714acea3422e1ee43cf782c39ecad))
+
 ## [1.6.4](https://github.com/dingff/gitcut/compare/v1.6.3...v1.6.4) (2023-03-27)
 
 ## [1.6.3](https://github.com/dingff/gitcut/compare/v1.6.2...v1.6.3) (2023-03-27)
