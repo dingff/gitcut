@@ -1,6 +1,8 @@
 # gitcut
 
-It allows you to simplify multiple git commands into one. And there is no need to worry about errors as it will immediately terminate if any command throws an error.
+It helps you simplify multiple git commands into one.
+
+![demo](./demo.gif)
 
 ## Install
 ```
