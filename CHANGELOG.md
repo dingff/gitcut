@@ -1,5 +1,12 @@
 
 
+## [1.7.2](https://github.com/dingff/gitcut/compare/v1.7.1...v1.7.2) (2023-04-15)
+
+
+### Features
+
+* add demo.gif ([66d8088](https://github.com/dingff/gitcut/commit/66d80880345804c9fe05e715b49a0c07ac0b6825))
+
 ## [1.7.1](https://github.com/dingff/gitcut/compare/v1.7.0...v1.7.1) (2023-03-28)
 
 
