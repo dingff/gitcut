@@ -80,10 +80,24 @@ const handles = {
         remoteAlias = remoteUrl
       }
       await startSpawn('git', ['fetch', remoteAlias, branch])
-      if (paths?.[0]) {
-        await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...paths])
+      // 区分出要排除在外的路径
+      const excludePaths = []
+      const includePaths = []
+      paths?.forEach((path) => {
+        if (path.startsWith('!')) {
+          excludePaths.push(path)
+        } else {
+          includePaths.push(path)
+        }
+      })
+      if (includePaths[0]) {
+        await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...includePaths])
       } else {
         await startSpawn('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories'])
+      }
+      if (excludePaths[0]) {
+        await startSpawn('git', ['reset', ...excludePaths])
+        await startSpawn('git', ['checkout', '--', ...excludePaths])
       }
       if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
       console.log(`${OK}Success!`)
