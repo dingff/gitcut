@@ -28,6 +28,7 @@ If the remote repository has already been added, you can use its name instead of
 ```
 gt query origin <branch> [paths]
 ```
+To exclude some paths in a directory, try adding `!` before the path.
 ### submit
 Submit all changes in the workspace. Following the [commitlint-config-conventional](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional#type-enum) types, emoji will be automatically added to the commit message. All you need to do is enable it in the configuration file, as it is turned off by default.
 ```
