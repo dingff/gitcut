@@ -85,7 +85,7 @@ const handles = {
       const includePaths = []
       paths?.forEach((path) => {
         if (path.startsWith('!')) {
-          excludePaths.push(path)
+          excludePaths.push(path.slice(1))
         } else {
           includePaths.push(path)
         }
