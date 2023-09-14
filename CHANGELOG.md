@@ -1,5 +1,12 @@
 
 
+## [1.8.1](https://github.com/dingff/gitcut/compare/v1.8.0...v1.8.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* excludePaths should not have prefix ([05e8dfe](https://github.com/dingff/gitcut/commit/05e8dfe7ed97bc363c313aef7e9dbe46859ca224))
+
 # [1.8.0](https://github.com/dingff/gitcut/compare/v1.7.2...v1.8.0) (2023-09-14)
 
 
