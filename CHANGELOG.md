@@ -1,5 +1,12 @@
 
 
+# [1.8.0](https://github.com/dingff/gitcut/compare/v1.7.2...v1.8.0) (2023-09-14)
+
+
+### Features
+
+* support to exclude some paths ([0fd986f](https://github.com/dingff/gitcut/commit/0fd986fe309f468a0c3552bc4d82ca99a27206a0))
+
 ## [1.7.2](https://github.com/dingff/gitcut/compare/v1.7.1...v1.7.2) (2023-04-15)
 
 
