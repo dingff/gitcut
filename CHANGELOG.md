@@ -1,5 +1,12 @@
 
 
+# [1.9.0](https://github.com/dingff/gitcut/compare/v1.8.1...v1.9.0) (2023-12-04)
+
+
+### Features
+
+* add bh ([722cdfe](https://github.com/dingff/gitcut/commit/722cdfe653239fbb707b7aaf810b303294e43da9))
+
 ## [1.8.1](https://github.com/dingff/gitcut/compare/v1.8.0...v1.8.1) (2023-09-14)
 
 
