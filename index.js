@@ -146,5 +146,17 @@ const handles = {
       console.log(`${OK}Success!`)
     } catch (err) {}
   },
+  bh: async () => {
+    try {
+      const branch = args[0]
+      if (!branch) {
+        console.log(`${ERROR}Usage: gt bh <branch>`)
+        return
+      }
+      await startSpawn('git', ['checkout', '-b', branch])
+      await startSpawn('git', ['push', '-u', 'origin', branch])
+      console.log(`${OK}Success!`)
+    } catch (err) {}
+  },
 }
 handles[cmdType] ? handles[cmdType]() : startSpawn('git', [cmdType, ...args]).catch(() => {})
