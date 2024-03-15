@@ -1,5 +1,12 @@
 
 
+# [1.10.0](https://github.com/dingff/gitcut/compare/v1.9.0...v1.10.0) (2024-03-15)
+
+
+### Features
+
+* add an alias to submit ([23d431a](https://github.com/dingff/gitcut/commit/23d431a7982fc4869a816cc112a417eb0d7c5fdf))
+
 # [1.9.0](https://github.com/dingff/gitcut/compare/v1.8.1...v1.9.0) (2023-12-04)
 
 
