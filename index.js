@@ -159,4 +159,5 @@ const handles = {
     } catch (err) {}
   },
 }
+handles.s = handles.submit
 handles[cmdType] ? handles[cmdType]() : startSpawn('git', [cmdType, ...args]).catch(() => {})
