@@ -1,5 +1,12 @@
 
 
+# [1.11.0](https://github.com/dingff/gitcut/compare/v1.10.0...v1.11.0) (2024-03-25)
+
+
+### Features
+
+* use inquirer to enhance bh ([394d678](https://github.com/dingff/gitcut/commit/394d678dab52c67ce215095151c4ae5457c27897))
+
 # [1.10.0](https://github.com/dingff/gitcut/compare/v1.9.0...v1.10.0) (2024-03-15)
 
 
