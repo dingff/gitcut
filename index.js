@@ -3,6 +3,7 @@ const ora = require('ora')
 const chalk = require('chalk')
 const fs = require('fs')
 const path = require('path')
+const inquirer = require('inquirer')
 
 const [error, warning, success, info, gray] = [chalk.bold.red, chalk.bold.yellow, chalk.bold.green, chalk.bold.blue, chalk.gray]
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
@@ -148,10 +149,32 @@ const handles = {
   },
   bh: async () => {
     try {
-      const branch = args[0]
+      let branch = args[0]
       if (!branch) {
-        console.log(`${ERROR}Usage: gt bh <branch>`)
-        return
+        const answer = await inquirer.prompt([
+          {
+            type: 'list',
+            name: 'type',
+            message: 'What type of branch do you want to create?',
+            choices: ['feature', 'hotfix']
+          },
+          {
+            type: 'input',
+            name: 'name',
+            message: 'What is the name of the branch?',
+            validate: (v) => {
+              if (v) {
+                return true
+              } else {
+                return 'Please enter a valid name'
+              }
+            },
+            filter: (v) => {
+              return v.trim()
+            }
+          },
+        ])
+        branch = `${answer.type}/${answer.name}`
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
