@@ -5,7 +5,13 @@ const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
 
-const [error, warning, success, info, gray] = [chalk.bold.red, chalk.bold.yellow, chalk.bold.green, chalk.bold.blue, chalk.gray]
+const [error, warning, success, info, gray] = [
+  chalk.bold.red,
+  chalk.bold.yellow,
+  chalk.bold.green,
+  chalk.bold.blue,
+  chalk.gray,
+]
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
 const ERROR = getHintPre(error('ERROR'))
@@ -156,7 +162,7 @@ const handles = {
             type: 'list',
             name: 'type',
             message: 'What type of branch do you want to create?',
-            choices: ['feature', 'hotfix']
+            choices: ['feature', 'hotfix'],
           },
           {
             type: 'input',
@@ -171,7 +177,7 @@ const handles = {
             },
             filter: (v) => {
               return v.trim()
-            }
+            },
           },
         ])
         branch = `${answer.type}/${answer.name}`
