@@ -1,5 +1,12 @@
 
 
+## [1.12.3](https://github.com/dingff/gitcut/compare/v1.12.2...v1.12.3) (2024-03-28)
+
+
+### Bug Fixes
+
+* **cp:** should use origin branch to fetch commits ([94fc430](https://github.com/dingff/gitcut/commit/94fc4301c5c57366017f2b6629a6a843cc5850e7))
+
 ## [1.12.2](https://github.com/dingff/gitcut/compare/v1.12.1...v1.12.2) (2024-03-28)
 
 
