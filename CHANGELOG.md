@@ -1,5 +1,12 @@
 
 
+## [1.12.1](https://github.com/dingff/gitcut/compare/v1.12.0...v1.12.1) (2024-03-28)
+
+
+### Bug Fixes
+
+* bug ([921c9e7](https://github.com/dingff/gitcut/commit/921c9e7fc7ca98b9b4392d0f850e53856317dc5c))
+
 # [1.12.0](https://github.com/dingff/gitcut/compare/v1.11.0...v1.12.0) (2024-03-28)
 
 
