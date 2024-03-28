@@ -24,9 +24,9 @@ const startSpawn = (c, p) => {
     subprocess.status !== 0 ? reject() : resolve()
   })
 }
-const startSpawnPipe = (c, p) => {
+const startSpawnPipe = (c, p, config = { silence: false }) => {
   return new Promise((resolve, reject) => {
-    const spinner = ora(`${c} ${p.join(' ')}`).start()
+    const spinner = config.silence ? null : ora(`${c} ${p.join(' ')}`).start()
     let stdoutData = ''
     let stderrData = ''
     const subprocess = spawn(c, p)
@@ -38,17 +38,22 @@ const startSpawnPipe = (c, p) => {
     })
     subprocess.on('close', (code) => {
       if (code !== 0) {
-        spinner.fail()
+        spinner?.fail()
         console.log(`${WARN}Uh, something went wrong.`)
         reject(stderrData)
       } else {
-        spinner.succeed()
+        spinner?.succeed()
         resolve(stdoutData)
       }
-      if (stderrData) process.stdout.write(stderrData)
-      if (stdoutData) process.stdout.write(stdoutData)
+      if (!config.silence) {
+        process.stdout.write(stderrData)
+        process.stdout.write(stdoutData)
+      }
     })
   })
+}
+const handleSuccess = () => {
+  console.log(`${OK}Success!`)
 }
 const cmdType = process.argv[2]
 const args = process.argv.slice(3)
@@ -76,8 +81,67 @@ const handles = {
       const alias = getConfig()
       if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
       if (!remoteUrl || !branch) {
-        console.log(`${ERROR}Usage: gt query <remoteUrl> <branch> [paths]`)
-        return
+        const remotes = (await startSpawnPipe('git', ['remote'], { silence: true })).split('\n').filter(Boolean)
+        remoteUrl = (
+          await inquirer.prompt([
+            {
+              type: 'rawlist',
+              name: 'data',
+              message: 'Which remote do you want?',
+              choices: remotes,
+            },
+          ])
+        ).data
+        await startSpawnPipe('git', ['fetch', remoteUrl])
+        const branches = (
+          await startSpawnPipe(
+            'git',
+            [
+              'for-each-ref',
+              '--sort=-committerdate',
+              "--format='%(refname:short)'",
+              `refs/remotes/${remoteUrl}/`,
+              '| head -n 10',
+            ],
+            { silence: true },
+          )
+        )
+          .split('\n')
+          .filter(Boolean)
+          .map((item) => {
+            return item.slice(1, -1).replace(`${remoteUrl}/`, '')
+          })
+        branch = (
+          await inquirer.prompt([
+            {
+              type: 'rawlist',
+              name: 'data',
+              message: 'And which branch?',
+              choices: branches,
+            },
+          ])
+        ).data
+        paths = (
+          await inquirer.prompt([
+            {
+              type: 'input',
+              name: 'data',
+              message: 'Enter the file paths:',
+              validate: (v) => {
+                if (v) {
+                  return true
+                } else {
+                  return 'Please enter a valid path'
+                }
+              },
+              filter: (v) => {
+                return v.trim()
+              },
+            },
+          ])
+        ).data
+          .split(' ')
+          .filter(Boolean)
       }
       if (remoteUrl.startsWith('https://') || remoteUrl.startsWith('git@')) {
         const r = await startSpawnPipe('git', ['remote'])
@@ -107,7 +171,7 @@ const handles = {
         await startSpawn('git', ['checkout', '--', ...excludePaths])
       }
       if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
-      console.log(`${OK}Success!`)
+      handleSuccess()
     } catch (err) {}
   },
   submit: async () => {
@@ -142,7 +206,7 @@ const handles = {
       await startSpawn('git', ['commit', '-m', msg])
       await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
-      console.log(`${OK}Success!`)
+      handleSuccess()
     } catch (err) {}
   },
   rc: async () => {
@@ -150,7 +214,7 @@ const handles = {
       await startSpawn('git', ['add', '.'])
       await startSpawn('git', ['rebase', '--continue'])
       await startSpawn('git', ['push'])
-      console.log(`${OK}Success!`)
+      handleSuccess()
     } catch (err) {}
   },
   bh: async () => {
@@ -184,7 +248,7 @@ const handles = {
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
-      console.log(`${OK}Success!`)
+      handleSuccess()
     } catch (err) {}
   },
 }

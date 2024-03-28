@@ -7,6 +7,10 @@ module.exports = {
   globals: {
     chrome: true,
     window: true,
+    module: true,
+    process: true,
+    require: true,
+    __dirname: true,
   },
   rules: {
     'prettier/prettier': [
@@ -17,5 +21,7 @@ module.exports = {
         printWidth: 120,
       },
     ],
+    'no-undef': 'error',
+    'no-unused-vars': 'warn',
   },
 }
