@@ -1,5 +1,12 @@
 
 
+## [1.12.2](https://github.com/dingff/gitcut/compare/v1.12.1...v1.12.2) (2024-03-28)
+
+
+### Features
+
+* **cp:** add index for commits ([801c3b6](https://github.com/dingff/gitcut/commit/801c3b68d9d882a2fa8a83ff2f47c861cacc7f35))
+
 ## [1.12.1](https://github.com/dingff/gitcut/compare/v1.12.0...v1.12.1) (2024-03-28)
 
 
