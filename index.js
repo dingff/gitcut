@@ -60,7 +60,7 @@ const inquireBranch = async (remote) => {
   const branches = (
     await startSpawnPipe(
       'git',
-      ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=20', `refs/remotes/${remote}/`],
+      ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', `refs/remotes/${remote}/`],
       { silence: true },
     )
   )
@@ -267,9 +267,12 @@ const handles = {
   cp: async () => {
     try {
       const branch = await inquireBranch('origin')
-      const commits = (await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 30, branch], { silence: true }))
+      const commits = (await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, branch], { silence: true }))
         .split('\n')
         .filter(Boolean)
+        .map((item, i) => {
+          return `${i + 1}）${item}`
+        })
       const selectedCommits = (
         await inquirer.prompt([
           {
@@ -287,7 +290,7 @@ const handles = {
           },
         ])
       ).data
-      const hashes = selectedCommits.map((item) => item.split(' ')[0])
+      const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
       await startSpawn('git', ['cherry-pick', ...hashes])
       handleSuccess()
     } catch (err) {}
