@@ -5,12 +5,12 @@ const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
 
-const [error, warning, success, gray] = [
+const [error, warning, success, info, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
   chalk.bold.green,
+  chalk.cyan,
   chalk.gray,
-  chalk.bold.blue,
 ]
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
@@ -56,6 +56,7 @@ const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
 const inquireBranch = async (remote) => {
+  const pageSize = 15
   const branches = (
     await startSpawnPipe(
       'git',
@@ -64,7 +65,7 @@ const inquireBranch = async (remote) => {
         '--sort=-committerdate',
         "--format='%(refname:short)'",
         `refs/remotes/${remote}/`,
-        '| head -n 10',
+        `| head -n ${pageSize}`,
       ],
       { silence: true },
     )
@@ -81,6 +82,7 @@ const inquireBranch = async (remote) => {
         name: 'data',
         message: 'Which branch do you want?',
         choices: branches,
+        pageSize,
       },
     ])
   ).data
@@ -223,6 +225,23 @@ const handles = {
   bh: async () => {
     try {
       let branch = args[0]
+      if (branch === '-l') {
+        const branches = (
+          await startSpawnPipe(
+            'git',
+            ['for-each-ref', '--sort=-committerdate', "--format='%(refname:short)'", `refs/remotes`, '| head -n 20'],
+            { silence: true },
+          )
+        )
+          .split('\n')
+          .filter(Boolean)
+          .map((item) => {
+            return info(item.slice(1, -1))
+          })
+          .join('\n')
+        console.log(branches)
+        return
+      }
       if (!branch) {
         const answer = await inquirer.prompt([
           {
@@ -257,8 +276,11 @@ const handles = {
   cp: async () => {
     try {
       // await startSpawnPipe('git', ['fetch', 'origin'])
+      const pageSize = 20
       const branch = await inquireBranch('origin')
-      const commits = (await startSpawnPipe('git', ['log', '--format="%h %s"', '-n', '20', branch], { silence: true }))
+      const commits = (
+        await startSpawnPipe('git', ['log', '--format="%h %s"', '-n', pageSize, branch], { silence: true })
+      )
         .split('\n')
         .filter(Boolean)
         .map((item) => item.slice(1, -1))
@@ -269,7 +291,7 @@ const handles = {
             name: 'data',
             message: 'Which commits do you want to pick?',
             choices: commits,
-            pageSize: 20,
+            pageSize,
             validate: (v) => {
               if (v.length < 1) {
                 return 'You must choose at least one commit'
