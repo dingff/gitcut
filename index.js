@@ -267,7 +267,9 @@ const handles = {
   cp: async () => {
     try {
       const branch = await inquireBranch('origin')
-      const commits = (await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, branch], { silence: true }))
+      const commits = (
+        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `origin/${branch}`], { silence: true })
+      )
         .split('\n')
         .filter(Boolean)
         .map((item, i) => {
