@@ -16,6 +16,7 @@ const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
 const ERROR = getHintPre(error('ERROR'))
 const OK = getHintPre(success('OK'))
+const inquirerPageSize = 15
 
 const startSpawn = (c, p) => {
   return new Promise((resolve, reject) => {
@@ -56,24 +57,17 @@ const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
 const inquireBranch = async (remote) => {
-  const pageSize = 15
   const branches = (
     await startSpawnPipe(
       'git',
-      [
-        'for-each-ref',
-        '--sort=-committerdate',
-        "--format='%(refname:short)'",
-        `refs/remotes/${remote}/`,
-        `| head -n ${pageSize}`,
-      ],
+      ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=20', `refs/remotes/${remote}/`],
       { silence: true },
     )
   )
     .split('\n')
     .filter(Boolean)
     .map((item) => {
-      return item.slice(1, -1).replace(`${remote}/`, '')
+      return item.replace(`${remote}/`, '')
     })
   return (
     await inquirer.prompt([
@@ -82,7 +76,7 @@ const inquireBranch = async (remote) => {
         name: 'data',
         message: 'Which branch do you want?',
         choices: branches,
-        pageSize,
+        pageSize: inquirerPageSize,
       },
     ])
   ).data
@@ -229,17 +223,14 @@ const handles = {
         const branches = (
           await startSpawnPipe(
             'git',
-            ['for-each-ref', '--sort=-committerdate', "--format='%(refname:short)'", `refs/remotes`, '| head -n 20'],
+            ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', 'refs/remotes'],
             { silence: true },
           )
         )
           .split('\n')
           .filter(Boolean)
-          .map((item) => {
-            return info(item.slice(1, -1))
-          })
           .join('\n')
-        console.log(branches)
+        console.log(info(branches))
         return
       }
       if (!branch) {
@@ -275,15 +266,10 @@ const handles = {
   },
   cp: async () => {
     try {
-      // await startSpawnPipe('git', ['fetch', 'origin'])
-      const pageSize = 20
       const branch = await inquireBranch('origin')
-      const commits = (
-        await startSpawnPipe('git', ['log', '--format="%h %s"', '-n', pageSize, branch], { silence: true })
-      )
+      const commits = (await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 30, branch], { silence: true }))
         .split('\n')
         .filter(Boolean)
-        .map((item) => item.slice(1, -1))
       const selectedCommits = (
         await inquirer.prompt([
           {
@@ -291,7 +277,7 @@ const handles = {
             name: 'data',
             message: 'Which commits do you want to pick?',
             choices: commits,
-            pageSize,
+            pageSize: inquirerPageSize,
             validate: (v) => {
               if (v.length < 1) {
                 return 'You must choose at least one commit'
