@@ -5,12 +5,12 @@ const fs = require('fs')
 const path = require('path')
 const inquirer = require('inquirer')
 
-const [error, warning, success, info, gray] = [
+const [error, warning, success, gray] = [
   chalk.bold.red,
   chalk.bold.yellow,
   chalk.bold.green,
-  chalk.bold.blue,
   chalk.gray,
+  chalk.bold.blue,
 ]
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
@@ -55,6 +55,36 @@ const startSpawnPipe = (c, p, config = { silence: false }) => {
 const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
+const inquireBranch = async (remote) => {
+  const branches = (
+    await startSpawnPipe(
+      'git',
+      [
+        'for-each-ref',
+        '--sort=-committerdate',
+        "--format='%(refname:short)'",
+        `refs/remotes/${remote}/`,
+        '| head -n 10',
+      ],
+      { silence: true },
+    )
+  )
+    .split('\n')
+    .filter(Boolean)
+    .map((item) => {
+      return item.slice(1, -1).replace(`${remote}/`, '')
+    })
+  return (
+    await inquirer.prompt([
+      {
+        type: 'rawlist',
+        name: 'data',
+        message: 'Which branch do you want?',
+        choices: branches,
+      },
+    ])
+  ).data
+}
 const cmdType = process.argv[2]
 const args = process.argv.slice(3)
 const configPath = path.join(process.cwd(), 'gtconfig.json')
@@ -93,34 +123,7 @@ const handles = {
           ])
         ).data
         await startSpawnPipe('git', ['fetch', remoteUrl])
-        const branches = (
-          await startSpawnPipe(
-            'git',
-            [
-              'for-each-ref',
-              '--sort=-committerdate',
-              "--format='%(refname:short)'",
-              `refs/remotes/${remoteUrl}/`,
-              '| head -n 10',
-            ],
-            { silence: true },
-          )
-        )
-          .split('\n')
-          .filter(Boolean)
-          .map((item) => {
-            return item.slice(1, -1).replace(`${remoteUrl}/`, '')
-          })
-        branch = (
-          await inquirer.prompt([
-            {
-              type: 'rawlist',
-              name: 'data',
-              message: 'And which branch?',
-              choices: branches,
-            },
-          ])
-        ).data
+        branch = await inquireBranch(remoteUrl)
         paths = (
           await inquirer.prompt([
             {
@@ -248,6 +251,36 @@ const handles = {
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
+      handleSuccess()
+    } catch (err) {}
+  },
+  cp: async () => {
+    try {
+      // await startSpawnPipe('git', ['fetch', 'origin'])
+      const branch = await inquireBranch('origin')
+      const commits = (await startSpawnPipe('git', ['log', '--format="%h %s"', '-n', '20', branch], { silence: true }))
+        .split('\n')
+        .filter(Boolean)
+        .map((item) => item.slice(1, -1))
+      const selectedCommits = (
+        await inquirer.prompt([
+          {
+            type: 'checkbox',
+            name: 'data',
+            message: 'Which commits do you want to pick?',
+            choices: commits,
+            pageSize: 20,
+            validate: (v) => {
+              if (v.length < 1) {
+                return 'You must choose at least one commit'
+              }
+              return true
+            },
+          },
+        ])
+      ).data
+      const hashes = selectedCommits.map((item) => item.split(' ')[0])
+      await startSpawn('git', ['cherry-pick', ...hashes])
       handleSuccess()
     } catch (err) {}
   },

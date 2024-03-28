@@ -22,6 +22,6 @@ module.exports = {
       },
     ],
     'no-undef': 'error',
-    'no-unused-vars': 'warn',
+    'no-unused-vars': 'error',
   },
 }
