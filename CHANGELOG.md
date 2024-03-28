@@ -1,5 +1,14 @@
 
 
+# [1.12.0](https://github.com/dingff/gitcut/compare/v1.11.0...v1.12.0) (2024-03-28)
+
+
+### Features
+
+* add bh -l ([223e3b9](https://github.com/dingff/gitcut/commit/223e3b92c4ec2a4c6fdf065754523c6ea698140c))
+* add cp ([3aafb10](https://github.com/dingff/gitcut/commit/3aafb10cc80990bb9f7a45f24a2a95238e01d5f7))
+* enhance query with inquirer ([537efb2](https://github.com/dingff/gitcut/commit/537efb2b959dd9ed912faa645f83661d45f04488))
+
 # [1.11.0](https://github.com/dingff/gitcut/compare/v1.10.0...v1.11.0) (2024-03-25)
 
 
