@@ -266,9 +266,10 @@ const handles = {
   },
   cp: async () => {
     try {
-      const branch = await inquireBranch('origin')
+      const remote = 'origin'
+      const branch = await inquireBranch(remote)
       const commits = (
-        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `origin/${branch}`], { silence: true })
+        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `${remote}/${branch}`], { silence: true })
       )
         .split('\n')
         .filter(Boolean)
@@ -295,6 +296,14 @@ const handles = {
       const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
       await startSpawn('git', ['cherry-pick', ...hashes])
       handleSuccess()
+    } catch (err) {}
+  },
+  mg: async () => {
+    try {
+      const remote = 'origin'
+      await startSpawn('git', ['fetch'])
+      const branch = await inquireBranch(remote)
+      await startSpawn('git', ['merge', `${remote}/${branch}`])
     } catch (err) {}
   },
 }
