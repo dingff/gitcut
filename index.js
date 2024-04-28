@@ -220,10 +220,11 @@ const handles = {
     try {
       let branch = args[0]
       if (branch === '-l') {
+        await startSpawnPipe('git', ['fetch'])
         const branches = (
           await startSpawnPipe(
             'git',
-            ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', 'refs/remotes'],
+            ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=15', 'refs/remotes'],
             { silent: true },
           )
         )
@@ -301,7 +302,7 @@ const handles = {
   mg: async () => {
     try {
       const remote = 'origin'
-      await startSpawn('git', ['fetch'])
+      await startSpawnPipe('git', ['fetch'])
       const branch = await inquireBranch(remote)
       await startSpawn('git', ['merge', `${remote}/${branch}`])
     } catch (err) {}
