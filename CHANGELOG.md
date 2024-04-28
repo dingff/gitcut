@@ -1,5 +1,12 @@
 
 
+# [1.13.0](https://github.com/dingff/gitcut/compare/v1.12.3...v1.13.0) (2024-04-28)
+
+
+### Features
+
+* add mg ([6aa1c88](https://github.com/dingff/gitcut/commit/6aa1c88fef151eb608cfb4e609728642f4eb8694))
+
 ## [1.12.3](https://github.com/dingff/gitcut/compare/v1.12.2...v1.12.3) (2024-03-28)
 
 
