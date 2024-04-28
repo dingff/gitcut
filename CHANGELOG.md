@@ -1,5 +1,13 @@
 
 
+## [1.13.1](https://github.com/dingff/gitcut/compare/v1.13.0...v1.13.1) (2024-04-28)
+
+
+### Bug Fixes
+
+* rename silence config ([cd54d13](https://github.com/dingff/gitcut/commit/cd54d13961fedb724c4c9ba447a7a3ad548b2b38))
+* use pipe for fetch ([d44a910](https://github.com/dingff/gitcut/commit/d44a9101e6feca4433bdeb5f1499c883fc3043a8))
+
 # [1.13.0](https://github.com/dingff/gitcut/compare/v1.12.3...v1.13.0) (2024-04-28)
 
 
