@@ -25,9 +25,9 @@ const startSpawn = (c, p) => {
     subprocess.status !== 0 ? reject() : resolve()
   })
 }
-const startSpawnPipe = (c, p, config = { silence: false }) => {
+const startSpawnPipe = (c, p, config = { silent: false }) => {
   return new Promise((resolve, reject) => {
-    const spinner = config.silence ? null : ora(`${c} ${p.join(' ')}`).start()
+    const spinner = config.silent ? null : ora(`${c} ${p.join(' ')}`).start()
     let stdoutData = ''
     let stderrData = ''
     const subprocess = spawn(c, p)
@@ -46,7 +46,7 @@ const startSpawnPipe = (c, p, config = { silence: false }) => {
         spinner?.succeed()
         resolve(stdoutData)
       }
-      if (!config.silence) {
+      if (!config.silent) {
         process.stdout.write(stderrData)
         process.stdout.write(stdoutData)
       }
@@ -61,7 +61,7 @@ const inquireBranch = async (remote) => {
     await startSpawnPipe(
       'git',
       ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', `refs/remotes/${remote}/`],
-      { silence: true },
+      { silent: true },
     )
   )
     .split('\n')
@@ -107,7 +107,7 @@ const handles = {
       const alias = getConfig()
       if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
       if (!remoteUrl || !branch) {
-        const remotes = (await startSpawnPipe('git', ['remote'], { silence: true })).split('\n').filter(Boolean)
+        const remotes = (await startSpawnPipe('git', ['remote'], { silent: true })).split('\n').filter(Boolean)
         remoteUrl = (
           await inquirer.prompt([
             {
@@ -224,7 +224,7 @@ const handles = {
           await startSpawnPipe(
             'git',
             ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', 'refs/remotes'],
-            { silence: true },
+            { silent: true },
           )
         )
           .split('\n')
@@ -269,7 +269,7 @@ const handles = {
       const remote = 'origin'
       const branch = await inquireBranch(remote)
       const commits = (
-        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `${remote}/${branch}`], { silence: true })
+        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `${remote}/${branch}`], { silent: true })
       )
         .split('\n')
         .filter(Boolean)
