@@ -1,5 +1,12 @@
 
 
+## [1.14.1](https://github.com/dingff/gitcut/compare/v1.14.0...v1.14.1) (2024-07-29)
+
+
+### Bug Fixes
+
+* empty space can not be branch name ([ae22d48](https://github.com/dingff/gitcut/commit/ae22d48fa4e9ca7ca265949581584a443fd9079c))
+
 # [1.14.0](https://github.com/dingff/gitcut/compare/v1.13.2...v1.14.0) (2024-07-29)
 
 
