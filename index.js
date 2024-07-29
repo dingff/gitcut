@@ -234,10 +234,15 @@ const handles = {
         console.log(info(branches))
         return
       }
+      let showEmoji = false
+      if (branch === '-e') {
+        showEmoji = true
+        branch = undefined
+      }
       if (!branch) {
         const emojis = {
-          feature: ':tada:',
-          hotfix: ':bug:',
+          feature: '🎉',
+          hotfix: '🐛',
         }
         const answer = await inquirer.prompt([
           {
@@ -262,7 +267,8 @@ const handles = {
             },
           },
         ])
-        branch = `${answer.type}/${answer.name} ${emojis[answer.type]}`
+        const emoji = showEmoji ? emojis[answer.type] : ''
+        branch = `${answer.type}/${answer.name}${emoji}`
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
