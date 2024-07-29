@@ -1,5 +1,12 @@
 
 
+# [1.14.0](https://github.com/dingff/gitcut/compare/v1.13.2...v1.14.0) (2024-07-29)
+
+
+### Features
+
+* add emoji in branch name ([0aace13](https://github.com/dingff/gitcut/commit/0aace139d2aeec829880079f249063e18a4161c8))
+
 ## [1.13.2](https://github.com/dingff/gitcut/compare/v1.13.1...v1.13.2) (2024-06-12)
 
 ## [1.13.1](https://github.com/dingff/gitcut/compare/v1.13.0...v1.13.1) (2024-04-28)
