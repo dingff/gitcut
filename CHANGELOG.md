@@ -1,5 +1,12 @@
 
 
+## [1.14.2](https://github.com/dingff/gitcut/compare/v1.14.1...v1.14.2) (2024-08-21)
+
+
+### Bug Fixes
+
+* **cp:** should reverse the selected hashes ([cceebe1](https://github.com/dingff/gitcut/commit/cceebe10f0c241676ac9803fe0aa99437895ab8b))
+
 ## [1.14.1](https://github.com/dingff/gitcut/compare/v1.14.0...v1.14.1) (2024-07-29)
 
 
