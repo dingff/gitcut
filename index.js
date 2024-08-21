@@ -305,7 +305,7 @@ const handles = {
         ])
       ).data
       const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
-      await startSpawn('git', ['cherry-pick', ...hashes])
+      await startSpawn('git', ['cherry-pick', ...hashes.reverse()])
       handleSuccess()
     } catch (err) {}
   },
