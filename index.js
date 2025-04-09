@@ -388,4 +388,8 @@ BEGIN {
   },
 }
 handles.s = handles.submit
+if (!cmdType) {
+  startSpawn('git', [])
+  process.exit(0)
+}
 handles[cmdType] ? handles[cmdType]() : startSpawn('git', [cmdType, ...args]).catch(() => {})
