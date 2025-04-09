@@ -16,9 +16,11 @@ const ERROR = getHintPre(error('ERROR'))
 const OK = getHintPre(success('OK'))
 const inquirerPageSize = 15
 
-const startSpawn = (c, p) => {
+const startSpawn = (c, p, config = { silent: false }) => {
   return new Promise((resolve, reject) => {
-    ora(`${c} ${p.join(' ')}`).succeed()
+    if (!config.silent) {
+      ora(`${c} ${p.join(' ')}`).succeed()
+    }
     const subprocess = spawnSync(c, p, { stdio: 'inherit' })
     subprocess.status !== 0 ? reject() : resolve()
   })
@@ -334,6 +336,54 @@ const handles = {
       await startSpawnPipe('git', ['fetch'])
       const branch = await inquireBranch(remote)
       await startSpawn('git', ['merge', `${remote}/${branch}`])
+    } catch (_) {}
+  },
+  stats: async () => {
+    const range = args[0] || '1.week'
+    try {
+      // 使用 shell 模式执行复杂的管道命令
+      const shellCommand = `git log --no-merges --since=${range}.ago --pretty='%an' --numstat | awk '
+NF == 1 { author = $0; next }
+NF == 3 { add[author] += $1; del[author] += $2 }
+END {
+    # 找出最长作者名、最大增加行数位数、最大删除行数位数
+    max_name_len = 0
+    max_add_len = 0
+    max_del_len = 0
+    
+    for (a in add) {
+        name_len = length(a)
+        if (name_len > max_name_len) max_name_len = name_len
+        
+        add_len = length(add[a])
+        if (add_len > max_add_len) max_add_len = add_len
+        
+        del_len = length(del[a])
+        if (del_len > max_del_len) max_del_len = del_len
+    }
+    
+    for (a in add)
+        printf "%d\\t%d\\t%d\\t%d\\t%d\\t%s\\n", add[a], del[a], max_name_len, max_add_len, max_del_len, a
+}' | sort -nr | awk -F'\\t' '
+BEGIN {
+    COLOR_RESET = "\\x1b[0m"
+    COLOR_AUTHOR = "\\x1b[0;36m"   # 作者名：青色
+    COLOR_ADD = "\\x1b[0;32m"      # 增加行数：绿色
+    COLOR_DEL = "\\x1b[0;31m"      # 删除行数：红色
+    COLOR_LABEL = "\\x1b[0m"       # 标签：默认颜色
+}
+{
+    # 使用动态宽度格式化输出，并添加颜色
+    printf "%s%-*s%s %s+%s %s%*d%s %s-%s %s%*d%s\\n", 
+        COLOR_AUTHOR, $3, $6, COLOR_RESET,
+        COLOR_LABEL, COLOR_RESET,
+        COLOR_ADD, $4, $1, COLOR_RESET,
+        COLOR_LABEL, COLOR_RESET,
+        COLOR_DEL, $5, $2, COLOR_RESET
+}'`
+
+      // 使用 spawn 的 shell 模式执行
+      await startSpawn('sh', ['-c', shellCommand], { silent: true })
     } catch (_) {}
   },
 }
