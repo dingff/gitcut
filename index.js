@@ -1,17 +1,15 @@
-const { spawn, spawnSync } = require('child_process')
+const { spawn, spawnSync } = require('node:child_process')
 const ora = require('ora')
-const chalk = require('chalk')
-const fs = require('fs')
-const path = require('path')
+const colors = require('picocolors')
+const fs = require('node:fs')
+const path = require('node:path')
 const inquirer = require('inquirer')
 
-const [error, warning, success, info, gray] = [
-  chalk.bold.red,
-  chalk.bold.yellow,
-  chalk.bold.green,
-  chalk.cyan,
-  chalk.gray,
-]
+const error = (s) => colors.bold(colors.red(s))
+const warning = (s) => colors.bold(colors.yellow(s))
+const success = (s) => colors.bold(colors.green(s))
+const info = (s) => colors.cyan(s)
+const gray = (s) => colors.gray(s)
 const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
 const ERROR = getHintPre(error('ERROR'))
@@ -60,7 +58,13 @@ const inquireBranch = async (remote) => {
   const branches = (
     await startSpawnPipe(
       'git',
-      ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=30', `refs/remotes/${remote}/`],
+      [
+        'for-each-ref',
+        '--sort=-committerdate',
+        '--format=%(refname:short)',
+        '--count=30',
+        `refs/remotes/${remote}/`,
+      ],
       { silent: true },
     )
   )
@@ -92,7 +96,9 @@ const getConfig = () => {
 }
 const handles = {
   '-v': () => {
-    const version = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version
+    const version = JSON.parse(
+      fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'),
+    ).version
     console.log(version)
   },
   '--init': () => {
@@ -107,7 +113,9 @@ const handles = {
       const alias = getConfig()
       if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
       if (!remoteUrl || !branch) {
-        const remotes = (await startSpawnPipe('git', ['remote'], { silent: true })).split('\n').filter(Boolean)
+        const remotes = (await startSpawnPipe('git', ['remote'], { silent: true }))
+          .split('\n')
+          .filter(Boolean)
         remoteUrl = (
           await inquirer.prompt([
             {
@@ -129,9 +137,8 @@ const handles = {
               validate: (v) => {
                 if (v) {
                   return true
-                } else {
-                  return 'Please enter a valid path'
                 }
+                return 'Please enter a valid path'
               },
               filter: (v) => {
                 return v.trim()
@@ -163,7 +170,11 @@ const handles = {
       if (includePaths[0]) {
         await startSpawn('git', ['checkout', `${remoteAlias}/${branch}`, ...includePaths])
       } else {
-        await startSpawn('git', ['merge', `${remoteAlias}/${branch}`, '--allow-unrelated-histories'])
+        await startSpawn('git', [
+          'merge',
+          `${remoteAlias}/${branch}`,
+          '--allow-unrelated-histories',
+        ])
       }
       if (excludePaths[0]) {
         await startSpawn('git', ['reset', ...excludePaths])
@@ -171,7 +182,7 @@ const handles = {
       }
       if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
       handleSuccess()
-    } catch (err) {}
+    } catch (_) {}
   },
   submit: async () => {
     const emojis = {
@@ -197,7 +208,8 @@ const handles = {
       const msgToken = msg.split(': ')
       if (msgToken.length > 1 && submitConfig?.emoji === true) {
         const [commitType, commitInfo] = msgToken
-        const commitEmoji = emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || ''
+        const commitEmoji =
+          emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || ''
         const space = commitEmoji ? ' ' : ''
         msg = `${commitType}: ${commitEmoji}${space}${commitInfo}`
       }
@@ -206,7 +218,7 @@ const handles = {
       await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
       handleSuccess()
-    } catch (err) {}
+    } catch (_) {}
   },
   rc: async () => {
     try {
@@ -214,7 +226,7 @@ const handles = {
       await startSpawn('git', ['rebase', '--continue'])
       await startSpawn('git', ['push'])
       handleSuccess()
-    } catch (err) {}
+    } catch (_) {}
   },
   bh: async () => {
     try {
@@ -224,7 +236,13 @@ const handles = {
         const branches = (
           await startSpawnPipe(
             'git',
-            ['for-each-ref', '--sort=-committerdate', '--format=%(refname:short)', '--count=15', 'refs/remotes'],
+            [
+              'for-each-ref',
+              '--sort=-committerdate',
+              '--format=%(refname:short)',
+              '--count=15',
+              'refs/remotes',
+            ],
             { silent: true },
           )
         )
@@ -258,9 +276,8 @@ const handles = {
             validate: (v) => {
               if (v) {
                 return true
-              } else {
-                return 'Please enter a valid name'
               }
+              return 'Please enter a valid name'
             },
             filter: (v) => {
               return v.trim()
@@ -273,14 +290,16 @@ const handles = {
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
       handleSuccess()
-    } catch (err) {}
+    } catch (_) {}
   },
   cp: async () => {
     try {
       const remote = 'origin'
       const branch = await inquireBranch(remote)
       const commits = (
-        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `${remote}/${branch}`], { silent: true })
+        await startSpawnPipe('git', ['log', '--format=%h %s', '-n', 50, `${remote}/${branch}`], {
+          silent: true,
+        })
       )
         .split('\n')
         .filter(Boolean)
@@ -307,7 +326,7 @@ const handles = {
       const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
       await startSpawn('git', ['cherry-pick', ...hashes.reverse()])
       handleSuccess()
-    } catch (err) {}
+    } catch (_) {}
   },
   mg: async () => {
     try {
@@ -315,7 +334,7 @@ const handles = {
       await startSpawnPipe('git', ['fetch'])
       const branch = await inquireBranch(remote)
       await startSpawn('git', ['merge', `${remote}/${branch}`])
-    } catch (err) {}
+    } catch (_) {}
   },
 }
 handles.s = handles.submit
