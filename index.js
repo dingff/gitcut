@@ -4,6 +4,7 @@ const colors = require('picocolors')
 const fs = require('node:fs')
 const path = require('node:path')
 const inquirer = require('inquirer')
+const stringWidth = require('string-width')
 
 const error = (s) => colors.bold(colors.red(s))
 const warning = (s) => colors.bold(colors.yellow(s))
@@ -341,49 +342,58 @@ const handles = {
   stats: async () => {
     const range = args[0] || '1.week'
     try {
-      // 使用 shell 模式执行复杂的管道命令
-      const shellCommand = `git log --no-merges --since=${range}.ago --pretty='%an' --numstat | awk '
-NF == 1 { author = $0; next }
-NF == 3 { add[author] += $1; del[author] += $2 }
-END {
-    # 找出最长作者名、最大增加行数位数、最大删除行数位数
-    max_name_len = 0
-    max_add_len = 0
-    max_del_len = 0
-    
-    for (a in add) {
-        name_len = length(a)
-        if (name_len > max_name_len) max_name_len = name_len
-        
-        add_len = length(add[a])
-        if (add_len > max_add_len) max_add_len = add_len
-        
-        del_len = length(del[a])
-        if (del_len > max_del_len) max_del_len = del_len
-    }
-    
-    for (a in add)
-        printf "%d\\t%d\\t%d\\t%d\\t%d\\t%s\\n", add[a], del[a], max_name_len, max_add_len, max_del_len, a
-}' | sort -nr | awk -F'\\t' '
-BEGIN {
-    COLOR_RESET = "\\x1b[0m"
-    COLOR_AUTHOR = "\\x1b[0;36m"   # 作者名：青色
-    COLOR_ADD = "\\x1b[0;32m"      # 增加行数：绿色
-    COLOR_DEL = "\\x1b[0;31m"      # 删除行数：红色
-    COLOR_LABEL = "\\x1b[0m"       # 标签：默认颜色
-}
-{
-    # 使用动态宽度格式化输出，并添加颜色
-    printf "%s%-*s%s %s+%s %s%*d%s %s-%s %s%*d%s\\n", 
-        COLOR_AUTHOR, $3, $6, COLOR_RESET,
-        COLOR_LABEL, COLOR_RESET,
-        COLOR_ADD, $4, $1, COLOR_RESET,
-        COLOR_LABEL, COLOR_RESET,
-        COLOR_DEL, $5, $2, COLOR_RESET
-}'`
+      const shellCommand = `git log --no-merges --since=${range}.ago --pretty='%an' --numstat`
+      const stdout = await startSpawnPipe('sh', ['-c', shellCommand], { silent: true })
+      const lines = stdout.split('\n')
+      const stats = {}
+      let currentAuthor = ''
+      lines.forEach((line) => {
+        if (line.trim() === '') return
+        if (!line.includes('\t')) {
+          currentAuthor = line.trim()
+          if (!stats[currentAuthor]) {
+            stats[currentAuthor] = { added: 0, deleted: 0 }
+          }
+          return
+        }
+        const [added, deleted] = line.split('\t').slice(0, 2)
+        if (added !== '-' && !Number.isNaN(Number.parseInt(added))) {
+          stats[currentAuthor].added += Number.parseInt(added)
+        }
+        if (deleted !== '-' && !Number.isNaN(Number.parseInt(deleted))) {
+          stats[currentAuthor].deleted += Number.parseInt(deleted)
+        }
+      })
+      const authors = Object.keys(stats)
+        .map((author) => ({
+          name: author,
+          added: stats[author].added,
+          deleted: stats[author].deleted,
+          displayWidth: stringWidth(author), // 计算实际显示宽度
+        }))
+        .sort((a, b) => b.added - a.added)
 
-      // 使用 spawn 的 shell 模式执行
-      await startSpawn('sh', ['-c', shellCommand], { silent: true })
+      // 使用显示宽度计算最大长度
+      const maxNameWidth = authors.reduce((max, author) => Math.max(max, author.displayWidth), 0)
+      const maxAddedLen = authors.reduce(
+        (max, author) => Math.max(max, author.added.toString().length),
+        0,
+      )
+      const maxDeletedLen = authors.reduce(
+        (max, author) => Math.max(max, author.deleted.toString().length),
+        0,
+      )
+      authors.forEach((author) => {
+        // 计算需要填充的空格数
+        const padding = ' '.repeat(maxNameWidth - author.displayWidth)
+        console.log(
+          colors.cyan(colors.cyan(author.name + padding)),
+          '+',
+          colors.green(author.added.toString().padStart(maxAddedLen)),
+          '-',
+          colors.red(author.deleted.toString().padStart(maxDeletedLen)),
+        )
+      })
     } catch (_) {}
   },
 }
