@@ -387,7 +387,7 @@ const handles = {
         // 计算需要填充的空格数
         const padding = ' '.repeat(maxNameWidth - author.displayWidth)
         console.log(
-          colors.cyan(colors.cyan(author.name + padding)),
+          colors.cyan(author.name + padding),
           '+',
           colors.green(author.added.toString().padStart(maxAddedLen)),
           '-',
