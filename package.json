@@ -15,7 +15,7 @@
   "author": "dingff",
   "license": "MIT",
   "dependencies": {
-    "inquirer": "^12.5.2",
+    "inquirer": "8.2.6",
     "ora": "5.4.1",
     "picocolors": "^1.1.1",
     "string-width": "4.2.3"
