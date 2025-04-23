@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.2](https://github.com/dingff/gitcut/compare/v1.15.1...v1.15.2) (2025-04-23)
+
+
+### Bug Fixes
+
+* update package.json description for clarity and add missing files field ([c595235](https://github.com/dingff/gitcut/commit/c59523551dcad6aa82c8e2b56d3183cb8f432c9b))
+
 ## [1.15.1](https://github.com/dingff/gitcut/compare/v1.15.0...v1.15.1) (2025-04-23)
 
 
