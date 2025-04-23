@@ -3,9 +3,12 @@
   "version": "1.15.0",
   "description": "Shortcuts for git",
   "main": "index.js",
-  "repository": "https://github.com/dingff/gitcut",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dingff/gitcut.git"
+  },
   "bin": {
-    "gt": "./bin/index"
+    "gt": "bin/index"
   },
   "scripts": {
     "release": "release-it --only-version",
