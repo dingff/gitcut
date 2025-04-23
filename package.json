@@ -3,7 +3,7 @@
   "version": "1.14.2",
   "description": "Shortcuts for git",
   "main": "index.js",
-  "repository": "dingff/gitcut",
+  "repository": "https://github.com/dingff/gitcut",
   "bin": {
     "gt": "./bin/index"
   },
