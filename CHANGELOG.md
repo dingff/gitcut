@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.1](https://github.com/dingff/gitcut/compare/v1.15.0...v1.15.1) (2025-04-23)
+
+
+### Bug Fixes
+
+* remove unused demo GIF file ([54a439b](https://github.com/dingff/gitcut/commit/54a439b1b6c1aedbeeb736ebd92ca1b7eda1cc68))
+* update repository field format in package.json ([fcd8c06](https://github.com/dingff/gitcut/commit/fcd8c0663d520bf108e22b06217eb456b4725290))
+
 # [1.15.0](https://github.com/dingff/gitcut/compare/v1.14.2...v1.15.0) (2025-04-23)
 
 
