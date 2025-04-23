@@ -1,4 +1,18 @@
+# Changelog
 
+# [1.15.0](https://github.com/dingff/gitcut/compare/v1.14.2...v1.15.0) (2025-04-23)
+
+
+### Bug Fixes
+
+* handles undefined cmdType in command execution ([eb098af](https://github.com/dingff/gitcut/commit/eb098af11a5454e46dc4b5ce2dad8e7c1c3ab858))
+* inquirer version ([e9e5895](https://github.com/dingff/gitcut/commit/e9e58954afe3f9d29dafb9d401f1b5c51e2d4dce))
+* remove unnecessary code ([1ebdaee](https://github.com/dingff/gitcut/commit/1ebdaee8dad39d203de2c4eb5163b84da60fbe18))
+
+
+### Features
+
+* support stats ([9176cc9](https://github.com/dingff/gitcut/commit/9176cc974fc3f4819793e8b7653edddd9437a94a))
 
 ## [1.14.2](https://github.com/dingff/gitcut/compare/v1.14.1...v1.14.2) (2024-08-21)
 
