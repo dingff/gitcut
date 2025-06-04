@@ -369,9 +369,10 @@ const handles = {
           name: author,
           added: stats[author].added,
           deleted: stats[author].deleted,
+          total: stats[author].added + stats[author].deleted,
           displayWidth: stringWidth(author), // 计算实际显示宽度
         }))
-        .sort((a, b) => b.added - a.added)
+        .sort((a, b) => b.total - a.total)
 
       // 使用显示宽度计算最大长度
       const maxNameWidth = authors.reduce((max, author) => Math.max(max, author.displayWidth), 0)
@@ -383,6 +384,10 @@ const handles = {
         (max, author) => Math.max(max, author.deleted.toString().length),
         0,
       )
+      const maxTotalLen = authors.reduce(
+        (max, author) => Math.max(max, author.total.toString().length),
+        0,
+      )
       authors.forEach((author) => {
         // 计算需要填充的空格数
         const padding = ' '.repeat(maxNameWidth - author.displayWidth)
@@ -392,6 +397,8 @@ const handles = {
           colors.green(author.added.toString().padStart(maxAddedLen)),
           '-',
           colors.red(author.deleted.toString().padStart(maxDeletedLen)),
+          'Σ',
+          colors.yellow(author.total.toString().padStart(maxTotalLen)),
         )
       })
     } catch (_) {}
