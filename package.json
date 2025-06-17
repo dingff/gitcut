@@ -1,6 +1,6 @@
 {
   "name": "gitcut",
-  "version": "1.15.2",
+  "version": "1.15.3",
   "description": "A CLI tool providing fast and convenient git command shortcuts",
   "main": "index.js",
   "repository": {

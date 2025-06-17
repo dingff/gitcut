@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.3](https://github.com/dingff/gitcut/compare/v1.15.2...v1.15.3) (2025-06-17)
+
+
+### Bug Fixes
+
+* update author stats sorting to include total contributions ([585159c](https://github.com/dingff/gitcut/commit/585159c1b7f4f54b921782c281bd9a48de9ea1a2))
+
 ## [1.15.2](https://github.com/dingff/gitcut/compare/v1.15.1...v1.15.2) (2025-04-23)
 
 
