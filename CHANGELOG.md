@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.4](https://github.com/dingff/gitcut/compare/v1.15.3...v1.15.4) (2025-08-07)
+
+
+### Features
+
+* hide loading when fetch ([34a3111](https://github.com/dingff/gitcut/commit/34a3111af9ed9ae3841a494d5a9dcc19506045bb))
+* include all branch data in stats ([06e4ba6](https://github.com/dingff/gitcut/commit/06e4ba620d9142bdc3c4c60cfd32d7f8d3528b42))
+
 ## [1.15.3](https://github.com/dingff/gitcut/compare/v1.15.2...v1.15.3) (2025-06-17)
 
 
