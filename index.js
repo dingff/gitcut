@@ -57,6 +57,9 @@ const startSpawnPipe = (c, p, config = { silent: false }) => {
 const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
+const updateRepo = async () => {
+  await startSpawnPipe('git', ['fetch', '--prune'], { silent: true })
+}
 const inquireBranch = async (remote) => {
   const branches = (
     await startSpawnPipe(
@@ -235,7 +238,7 @@ const handles = {
     try {
       let branch = args[0]
       if (branch === '-l') {
-        await startSpawnPipe('git', ['fetch'])
+        await updateRepo()
         const branches = (
           await startSpawnPipe(
             'git',
@@ -334,7 +337,7 @@ const handles = {
   mg: async () => {
     try {
       const remote = 'origin'
-      await startSpawnPipe('git', ['fetch'])
+      await updateRepo()
       const branch = await inquireBranch(remote)
       await startSpawn('git', ['merge', `${remote}/${branch}`])
     } catch (_) {}
@@ -342,7 +345,7 @@ const handles = {
   stats: async () => {
     const range = args[0] || '1.week'
     try {
-      await startSpawnPipe('git', ['fetch', '--all', '--prune'], { silent: true })
+      await updateRepo()
       const shellCommand = `git log --all --no-merges --since=${range}.ago --pretty='%an' --numstat`
       const stdout = await startSpawnPipe('sh', ['-c', shellCommand], { silent: true })
       const lines = stdout.split('\n')
