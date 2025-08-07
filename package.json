@@ -14,7 +14,14 @@
     "release": "release-it --only-version",
     "prepare": "husky"
   },
-  "keywords": ["git", "npm", "node", "shortcut", "submit", "query"],
+  "keywords": [
+    "git",
+    "npm",
+    "node",
+    "shortcut",
+    "submit",
+    "query"
+  ],
   "author": "dingff",
   "license": "MIT",
   "dependencies": {
@@ -24,19 +31,27 @@
     "string-width": "4.2.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.9.4",
+    "@biomejs/biome": "^2.1.3",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@release-it/conventional-changelog": "^10.0.1",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "release-it": "^19.0.3"
+    "lint-staged": "^16.1.4",
+    "release-it": "^19.0.4"
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"]
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "lint-staged": {
-    "*": ["biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"]
+    "*": [
+      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
+    ]
   },
-  "files": ["bin/", "index.js", "config.json"]
+  "files": [
+    "bin/",
+    "index.js",
+    "config.json"
+  ]
 }
