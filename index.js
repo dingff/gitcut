@@ -342,7 +342,8 @@ const handles = {
   stats: async () => {
     const range = args[0] || '1.week'
     try {
-      const shellCommand = `git log --no-merges --since=${range}.ago --pretty='%an' --numstat`
+      await startSpawnPipe('git', ['fetch', '--all', '--prune'], { silent: true })
+      const shellCommand = `git log --all --no-merges --since=${range}.ago --pretty='%an' --numstat`
       const stdout = await startSpawnPipe('sh', ['-c', shellCommand], { silent: true })
       const lines = stdout.split('\n')
       const stats = {}
