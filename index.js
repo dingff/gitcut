@@ -354,12 +354,15 @@ const handles = {
       lines.forEach((line) => {
         if (line.trim() === '') return
         if (!line.includes('\t')) {
+          // 作者名单独占一行，不含制表符
           currentAuthor = line.trim()
           if (!stats[currentAuthor]) {
-            stats[currentAuthor] = { added: 0, deleted: 0 }
+            stats[currentAuthor] = { added: 0, deleted: 0, commits: 0 }
           }
+          stats[currentAuthor].commits += 1
           return
         }
+        // 下面紧跟着的是该提交的文件变更统计
         const [added, deleted] = line.split('\t').slice(0, 2)
         if (added !== '-' && !Number.isNaN(Number.parseInt(added))) {
           stats[currentAuthor].added += Number.parseInt(added)
@@ -374,6 +377,7 @@ const handles = {
           added: stats[author].added,
           deleted: stats[author].deleted,
           total: stats[author].added + stats[author].deleted,
+          commits: stats[author].commits,
           displayWidth: stringWidth(author), // 计算实际显示宽度
         }))
         .sort((a, b) => b.total - a.total)
@@ -392,6 +396,10 @@ const handles = {
         (max, author) => Math.max(max, author.total.toString().length),
         0,
       )
+      const maxCommitsLen = authors.reduce(
+        (max, author) => Math.max(max, author.commits.toString().length),
+        0,
+      )
       authors.forEach((author) => {
         // 计算需要填充的空格数
         const padding = ' '.repeat(maxNameWidth - author.displayWidth)
@@ -403,6 +411,8 @@ const handles = {
           colors.red(author.deleted.toString().padStart(maxDeletedLen)),
           'Σ',
           colors.yellow(author.total.toString().padStart(maxTotalLen)),
+          'C',
+          colors.magenta(author.commits.toString().padStart(maxCommitsLen)),
         )
       })
     } catch (_) {}
