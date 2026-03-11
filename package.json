@@ -1,7 +1,7 @@
 {
   "name": "gitcut",
   "version": "1.15.4",
-  "description": "A Git CLI for modern workflows",
+  "description": "A modern Git CLI",
   "keywords": [
     "checkout",
     "cherry-pick",

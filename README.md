@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/gitcut.svg)](https://www.npmjs.com/package/gitcut)
 [![license](https://img.shields.io/npm/l/gitcut.svg)](./LICENSE)
 
-Gitcut is a Git CLI for modern workflows.  
+Gitcut is a modern Git CLI.
 It makes everyday workflows faster, safer, and more consistent.
 
 ## Why Gitcut
