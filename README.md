@@ -1,31 +1,35 @@
-# 🚀 Gitcut
+# Gitcut
 
-Gitcut is a streamlined CLI tool that simplifies common Git operations with intuitive commands, making your Git workflow faster and more efficient.
+[![npm version](https://img.shields.io/npm/v/gitcut.svg)](https://www.npmjs.com/package/gitcut)
+[![license](https://img.shields.io/npm/l/gitcut.svg)](./LICENSE)
 
-## ✨ Features
+Gitcut is a Git CLI for modern workflows.  
+It makes everyday workflows faster, safer, and more consistent.
 
-- 📥 **Query** - Cherry-pick files from specific branches and repositories
-- 📤 **Submit** - Quickly commit and push changes with enhanced commit messages
-- 🔀 **Branch Handling** - Create and manage branches with ease
-- 🍒 **Cherry Pick** - Interactive cherry-picking from remote branches
-- 🔄 **Merge** - Interactive branch merging
-- 📊 **Stats** - View contribution statistics by author
+## Why Gitcut
 
-## 🛠️ Installation
+- **Reduce repetitive commands**: encapsulate common Git flows into reusable commands
+- **Lower operational risk**: interactive workflows help reduce mistakes
+- **Improve workflow consistency**: standardize commit styles and branch operations
+- **Ready out of the box**: initialize once and execute via presets
+
+## Installation
 
 ```bash
 npm install -g gitcut
 ```
 
-## ⚙️ Configuration
+After installation, use the `gt` command as a streamlined alternative to `git`.
 
-Initialize the configuration:
+## Quick Start
+
+### 1) Initialize Configuration
 
 ```bash
 gt --init
 ```
 
-This creates a `gtconfig.json` file in your current directory with default settings:
+This generates a `gtconfig.json` file in your current directory with the default structure:
 
 ```json
 {
@@ -42,123 +46,68 @@ This creates a `gtconfig.json` file in your current directory with default setti
 }
 ```
 
-You can customize this file to add your own presets and preferences.
+### 2) Run Common Workflows
 
-## 📚 Commands
+```bash
+gt query main
+gt submit "feat: support xxx"
+gt bh feature/awesome-feature
+```
 
-### query
+## Command Overview
 
-Pull specific files from a remote branch:
+| Command                                      | Description                                          | Example                                |
+| -------------------------------------------- | ---------------------------------------------------- | -------------------------------------- |
+| `gt query <remote> <branch> <paths...>`      | Pull specific files/directories from a remote branch | `gt query origin main src/components`  |
+| `gt submit "<message>"` / `gt s "<message>"` | Commit and push in one step                          | `gt submit "fix: resolve login issue"` |
+| `gt bh [name]`                               | Create and push a branch (interactive supported)     | `gt bh feature/new-checkout`           |
+| `gt bh -l`                                   | List remote branches                                 | `gt bh -l`                             |
+| `gt bh -e`                                   | Create branch with emoji template                    | `gt bh -e`                             |
+| `gt cp`                                      | Interactive cherry-pick                              | `gt cp`                                |
+| `gt mg`                                      | Interactive branch merge                             | `gt mg`                                |
+| `gt rc`                                      | Continue rebase quickly                              | `gt rc`                                |
+| `gt stats [time-range]`                      | Show contribution stats by author                    | `gt stats 2.weeks`                     |
+
+## Key Features
+
+### Query: Precise Path-Based Retrieval
 
 ```bash
 gt query <remote> <branch> <paths...>
 ```
 
-You can exclude specific paths by prefixing them with `!`:
+Exclude paths with the `!` prefix:
 
 ```bash
 gt query origin main src/components !src/components/deprecated
 ```
 
-Running without arguments launches interactive mode.
-
-You can also use presets defined in your `gtconfig.json`:
+Run without arguments to enter interactive mode, or use presets from `gtconfig.json`:
 
 ```bash
 gt query main
 ```
 
-### submit
-
-Commit and push changes in one step:
+### Submit: Standardized Commit and Push
 
 ```bash
 gt submit "feat: add new feature"
 ```
 
-Emoji support for commit types can be enabled in the configuration file (`gtconfig.json`) by setting `submit.emoji` to `true`.
+Set `submit.emoji` to `true` in `gtconfig.json` to enable emoji mapping for commit types:
 
+- `feat` → ✨
+- `fix` → 🐛
+- `docs` → 📝
+- `style` → 🎨
+- `refactor` → 🔨
+- `perf` → ⚡️
+- `test` → ✅
+- `chore` → 🔧
+- `ci` → 💚
+- `revert` → ⏪
+- `build` → 📦
 
-When enabled, these emoji prefixes are supported:
-- feat: ✨
-- fix: 🐛
-- docs: 📝
-- style: 🎨
-- refactor: 🔨
-- perf: ⚡️
-- test: ✅
-- chore: 🔧
-- ci: 💚
-- revert: ⏪
-- build: 📦
-
-And you can use `gt s` as a shorthand for `gt submit`.
-
-### bh (branch handling)
-
-Create and push a new branch:
-
-```bash
-gt bh feature/new-feature
-```
-
-List remote branches:
-
-```bash
-gt bh -l
-```
-
-Create branch with interactive prompt:
-
-```bash
-gt bh
-```
-
-Create branch with emoji:
-
-```bash
-gt bh -e
-```
-
-### cp (cherry pick)
-
-Interactive cherry-picking:
-
-```bash
-gt cp
-```
-
-### mg (merge)
-
-Interactive branch merging:
-
-```bash
-gt mg
-```
-
-### rc (rebase continue)
-
-Simplifies the rebase continue process:
-
-```bash
-gt rc
-```
-
-### stats
-
-View contribution statistics:
-
-```bash
-gt stats [time-range]
-```
-
-Default time range is 1 week. Examples:
-```bash
-gt stats 2.weeks
-gt stats 1.month
-```
-
-
-## 📄 License
+## License
 
 MIT

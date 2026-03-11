@@ -2,7 +2,16 @@
   "name": "gitcut",
   "version": "1.15.4",
   "description": "A CLI tool providing fast and convenient git command shortcuts",
-  "main": "index.js",
+  "keywords": [
+    "git",
+    "node",
+    "npm",
+    "query",
+    "shortcut",
+    "submit"
+  ],
+  "license": "MIT",
+  "author": "dingff",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dingff/gitcut.git"
@@ -10,48 +19,39 @@
   "bin": {
     "gt": "bin/index"
   },
+  "files": [
+    "bin/",
+    "index.js",
+    "config.json"
+  ],
+  "type": "module",
   "scripts": {
     "release": "release-it --only-version",
     "prepare": "husky"
   },
-  "keywords": [
-    "git",
-    "npm",
-    "node",
-    "shortcut",
-    "submit",
-    "query"
-  ],
-  "author": "dingff",
-  "license": "MIT",
   "dependencies": {
-    "inquirer": "8.2.6",
-    "ora": "5.4.1",
+    "@inquirer/prompts": "^8.3.0",
+    "ora": "^9.3.0",
     "picocolors": "^1.1.1",
-    "string-width": "4.2.3"
+    "string-width": "^8.2.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.1.3",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@release-it/conventional-changelog": "^10.0.1",
+    "@commitlint/cli": "^20.4.3",
+    "@commitlint/config-conventional": "^20.4.3",
+    "@release-it/conventional-changelog": "^10.0.5",
     "husky": "^9.1.7",
-    "lint-staged": "^16.1.4",
-    "release-it": "^19.0.4"
+    "lint-staged": "^16.3.3",
+    "oxfmt": "^0.37.0",
+    "oxlint": "^1.52.0",
+    "release-it": "^19.2.4"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": "oxlint --fix",
+    "*": "oxfmt --no-error-on-unmatched-pattern"
   },
   "commitlint": {
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "lint-staged": {
-    "*": [
-      "biome check --write --no-errors-on-unmatched --files-ignore-unknown=true"
-    ]
-  },
-  "files": [
-    "bin/",
-    "index.js",
-    "config.json"
-  ]
+  }
 }

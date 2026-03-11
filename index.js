@@ -1,10 +1,10 @@
-const { spawn, spawnSync } = require('node:child_process')
-const ora = require('ora')
-const colors = require('picocolors')
-const fs = require('node:fs')
-const path = require('node:path')
-const inquirer = require('inquirer')
-const stringWidth = require('string-width')
+import { spawn, spawnSync } from 'node:child_process'
+import ora from 'ora'
+import colors from 'picocolors'
+import fs from 'node:fs'
+import path from 'node:path'
+import { checkbox, input, select } from '@inquirer/prompts'
+import stringWidth from 'string-width'
 
 const error = (s) => colors.bold(colors.red(s))
 const warning = (s) => colors.bold(colors.yellow(s))
@@ -15,7 +15,6 @@ const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
 const WARN = getHintPre(warning('WARN'))
 const ERROR = getHintPre(error('ERROR'))
 const OK = getHintPre(success('OK'))
-const inquirerPageSize = 15
 
 const startSpawn = (c, p, config = { silent: false }) => {
   return new Promise((resolve, reject) => {
@@ -23,7 +22,11 @@ const startSpawn = (c, p, config = { silent: false }) => {
       ora(`${c} ${p.join(' ')}`).succeed()
     }
     const subprocess = spawnSync(c, p, { stdio: 'inherit' })
-    subprocess.status !== 0 ? reject() : resolve()
+    if (subprocess.status !== 0) {
+      reject()
+    } else {
+      resolve()
+    }
   })
 }
 const startSpawnPipe = (c, p, config = { silent: false }) => {
@@ -76,25 +79,20 @@ const inquireBranch = async (remote) => {
   )
     .split('\n')
     .filter(Boolean)
-    .map((item) => {
-      return item.replace(`${remote}/`, '')
+    .map((item, i) => {
+      return `${i + 1}) ${item.replace(`${remote}/`, '')}`
     })
-  return (
-    await inquirer.prompt([
-      {
-        type: 'rawlist',
-        name: 'data',
-        message: 'Which branch do you want?',
-        choices: branches,
-        pageSize: inquirerPageSize,
-      },
-    ])
-  ).data
+  const rawBranch = await select({
+    message: 'Which branch do you want?',
+    choices: branches,
+    pageSize: 15,
+  })
+  return rawBranch.split(' ')[1]
 }
 const cmdType = process.argv[2]
 const args = process.argv.slice(3)
 const configPath = path.join(process.cwd(), 'gtconfig.json')
-// 获取不同命令的本地配置
+// Get local config for different commands
 const getConfig = () => {
   if (!fs.existsSync(configPath)) return
   const config = fs.readFileSync(configPath, 'utf8')
@@ -103,13 +101,13 @@ const getConfig = () => {
 const handles = {
   '-v': () => {
     const version = JSON.parse(
-      fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'),
+      fs.readFileSync(path.join(import.meta.dirname, 'package.json'), 'utf8'),
     ).version
     console.log(version)
   },
   '--init': () => {
     if (fs.existsSync(configPath)) return
-    const defaultConfig = fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')
+    const defaultConfig = fs.readFileSync(path.join(import.meta.dirname, 'config.json'), 'utf8')
     fs.writeFileSync(configPath, defaultConfig)
   },
   query: async () => {
@@ -122,36 +120,24 @@ const handles = {
         const remotes = (await startSpawnPipe('git', ['remote'], { silent: true }))
           .split('\n')
           .filter(Boolean)
-        remoteUrl = (
-          await inquirer.prompt([
-            {
-              type: 'rawlist',
-              name: 'data',
-              message: 'Which remote do you want?',
-              choices: remotes,
-            },
-          ])
-        ).data
+        remoteUrl = await select({
+          message: 'Which remote do you want?',
+          choices: remotes,
+        })
         await startSpawnPipe('git', ['fetch', remoteUrl])
         branch = await inquireBranch(remoteUrl)
         paths = (
-          await inquirer.prompt([
-            {
-              type: 'input',
-              name: 'data',
-              message: 'Enter the file paths:',
-              validate: (v) => {
-                if (v) {
-                  return true
-                }
-                return 'Please enter a valid path'
-              },
-              filter: (v) => {
-                return v.trim()
-              },
+          await input({
+            message: 'Enter the file paths:',
+            validate: (v) => {
+              if (v.trim()) {
+                return true
+              }
+              return 'Please enter a valid path'
             },
-          ])
-        ).data
+          })
+        )
+          .trim()
           .split(' ')
           .filter(Boolean)
       }
@@ -163,7 +149,7 @@ const handles = {
         remoteAlias = remoteUrl
       }
       await startSpawn('git', ['fetch', remoteAlias, branch])
-      // 区分出要排除在外的路径
+      // Separate paths that should be excluded
       const excludePaths = []
       const includePaths = []
       paths?.forEach((path) => {
@@ -188,7 +174,7 @@ const handles = {
       }
       if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
       handleSuccess()
-    } catch (_) {}
+    } catch {}
   },
   submit: async () => {
     const emojis = {
@@ -224,7 +210,7 @@ const handles = {
       await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
       handleSuccess()
-    } catch (_) {}
+    } catch {}
   },
   rc: async () => {
     try {
@@ -232,7 +218,7 @@ const handles = {
       await startSpawn('git', ['rebase', '--continue'])
       await startSpawn('git', ['push'])
       handleSuccess()
-    } catch (_) {}
+    } catch {}
   },
   bh: async () => {
     try {
@@ -268,35 +254,27 @@ const handles = {
           feature: '🎉',
           hotfix: '🐛',
         }
-        const answer = await inquirer.prompt([
-          {
-            type: 'list',
-            name: 'type',
-            message: 'What type of branch do you want to create?',
-            choices: ['feature', 'hotfix'],
+        const type = await select({
+          message: 'What type of branch do you want to create?',
+          choices: ['feature', 'hotfix'],
+        })
+        const name = await input({
+          message: 'What is the name of the branch?',
+          validate: (v) => {
+            if (v.trim()) {
+              return true
+            }
+            return 'Please enter a valid name'
           },
-          {
-            type: 'input',
-            name: 'name',
-            message: 'What is the name of the branch?',
-            validate: (v) => {
-              if (v) {
-                return true
-              }
-              return 'Please enter a valid name'
-            },
-            filter: (v) => {
-              return v.trim()
-            },
-          },
-        ])
+        })
+        const answer = { type, name: name.trim() }
         const emoji = showEmoji ? emojis[answer.type] : ''
         branch = `${answer.type}/${answer.name}${emoji}`
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
       handleSuccess()
-    } catch (_) {}
+    } catch {}
   },
   cp: async () => {
     try {
@@ -312,27 +290,21 @@ const handles = {
         .map((item, i) => {
           return `${i + 1}）${item}`
         })
-      const selectedCommits = (
-        await inquirer.prompt([
-          {
-            type: 'checkbox',
-            name: 'data',
-            message: 'Which commits do you want to pick?',
-            choices: commits,
-            pageSize: inquirerPageSize,
-            validate: (v) => {
-              if (v.length < 1) {
-                return 'You must choose at least one commit'
-              }
-              return true
-            },
-          },
-        ])
-      ).data
+      const selectedCommits = await checkbox({
+        message: 'Which commits do you want to pick?',
+        choices: commits,
+        pageSize: 15,
+        validate: (v) => {
+          if (v.length < 1) {
+            return 'You must choose at least one commit'
+          }
+          return true
+        },
+      })
       const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
       await startSpawn('git', ['cherry-pick', ...hashes.reverse()])
       handleSuccess()
-    } catch (_) {}
+    } catch {}
   },
   mg: async () => {
     try {
@@ -340,7 +312,7 @@ const handles = {
       await updateRepo()
       const branch = await inquireBranch(remote)
       await startSpawn('git', ['merge', `${remote}/${branch}`])
-    } catch (_) {}
+    } catch {}
   },
   stats: async () => {
     const range = args[0] || '1.week'
@@ -354,7 +326,7 @@ const handles = {
       lines.forEach((line) => {
         if (line.trim() === '') return
         if (!line.includes('\t')) {
-          // 作者名单独占一行，不含制表符
+          // The author name is on its own line and contains no tab
           currentAuthor = line.trim()
           if (!stats[currentAuthor]) {
             stats[currentAuthor] = { added: 0, deleted: 0, commits: 0 }
@@ -362,7 +334,7 @@ const handles = {
           stats[currentAuthor].commits += 1
           return
         }
-        // 下面紧跟着的是该提交的文件变更统计
+        // The following lines are file change stats for this commit
         const [added, deleted] = line.split('\t').slice(0, 2)
         if (added !== '-' && !Number.isNaN(Number.parseInt(added))) {
           stats[currentAuthor].added += Number.parseInt(added)
@@ -378,11 +350,11 @@ const handles = {
           deleted: stats[author].deleted,
           total: stats[author].added + stats[author].deleted,
           commits: stats[author].commits,
-          displayWidth: stringWidth(author), // 计算实际显示宽度
+          displayWidth: stringWidth(author), // Calculate actual display width
         }))
         .sort((a, b) => b.total - a.total)
 
-      // 使用显示宽度计算最大长度
+      // Use display width to calculate max length
       const maxNameWidth = authors.reduce((max, author) => Math.max(max, author.displayWidth), 0)
       const maxAddedLen = authors.reduce(
         (max, author) => Math.max(max, author.added.toString().length),
@@ -401,7 +373,7 @@ const handles = {
         0,
       )
       authors.forEach((author) => {
-        // 计算需要填充的空格数
+        // Calculate the number of padding spaces needed
         const padding = ' '.repeat(maxNameWidth - author.displayWidth)
         console.log(
           colors.cyan(author.name + padding),
@@ -415,7 +387,7 @@ const handles = {
           colors.magenta(author.commits.toString().padStart(maxCommitsLen)),
         )
       })
-    } catch (_) {}
+    } catch {}
   },
 }
 handles.s = handles.submit
@@ -423,4 +395,8 @@ if (!cmdType) {
   startSpawn('git', [])
   process.exit(0)
 }
-handles[cmdType] ? handles[cmdType]() : startSpawn('git', [cmdType, ...args]).catch(() => {})
+if (handles[cmdType]) {
+  handles[cmdType]()
+} else {
+  startSpawn('git', [cmdType, ...args]).catch(() => {})
+}
