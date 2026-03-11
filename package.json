@@ -1,13 +1,16 @@
 {
   "name": "gitcut",
   "version": "1.15.4",
-  "description": "A CLI tool providing fast and convenient git command shortcuts",
+  "description": "A Git CLI for modern workflows",
   "keywords": [
+    "checkout",
+    "cherry-pick",
     "git",
-    "node",
-    "npm",
+    "merge",
     "query",
+    "rebase",
     "shortcut",
+    "stats",
     "submit"
   ],
   "license": "MIT",
