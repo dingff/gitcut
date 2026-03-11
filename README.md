@@ -23,7 +23,14 @@ After installation, use the `gt` command as a streamlined alternative to `git`.
 
 ## Quick Start
 
-### 1) Initialize Configuration
+### 1) Run Common Workflows
+
+```bash
+gt submit "feat: support xxx"
+gt bh feature/awesome-feature
+```
+
+### 2) Initialize Configuration (Optional)
 
 ```bash
 gt --init
@@ -44,14 +51,6 @@ This generates a `gtconfig.json` file in your current directory with the default
     "emoji": false
   }
 }
-```
-
-### 2) Run Common Workflows
-
-```bash
-gt query main
-gt submit "feat: support xxx"
-gt bh feature/awesome-feature
 ```
 
 ## Command Overview
