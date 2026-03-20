@@ -29,7 +29,7 @@ importers:
         version: 20.4.3
       '@release-it/conventional-changelog':
         specifier: ^10.0.5
-        version: 10.0.5(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)(release-it@19.2.4(@types/node@22.14.0))
+        version: 10.0.5(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@22.14.0))
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -2370,9 +2370,9 @@ snapshots:
 
   '@phun-ky/typeof@2.0.3': {}
 
-  '@release-it/conventional-changelog@10.0.5(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)(release-it@19.2.4(@types/node@22.14.0))':
+  '@release-it/conventional-changelog@10.0.5(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)(release-it@19.2.4(@types/node@22.14.0))':
     dependencies:
-      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.1.0)
+      '@conventional-changelog/git-client': 2.6.0(conventional-commits-filter@5.0.0)(conventional-commits-parser@6.3.0)
       concat-stream: 2.0.0
       conventional-changelog: 7.2.0(conventional-commits-filter@5.0.0)
       conventional-changelog-angular: 8.3.0

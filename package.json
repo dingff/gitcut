@@ -28,6 +28,9 @@
     "config.json"
   ],
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "release": "release-it --only-version",
     "prepare": "husky"
@@ -56,5 +59,22 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release v${version}"
+    },
+    "github": {
+      "release": true,
+      "releaseName": "v${version}",
+      "web": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular",
+        "infile": "CHANGELOG.md",
+        "ignoreRecommendedBump": true
+      }
+    }
   }
 }
