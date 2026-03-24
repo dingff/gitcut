@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.1](https://github.com/dingff/gitcut/compare/v2.0.0...v2.0.1) (2026-03-24)
+
+### Bug Fixes
+
+- use more reasonable preset name in default config ([2018acc](https://github.com/dingff/gitcut/commit/2018acc7bb3b3813f238e509fb1c4bd2c6d21d86))
+
 # [2.0.0](https://github.com/dingff/gitcut/compare/v1.15.4...v2.0.0) (2026-03-11)
 
 ### Features
