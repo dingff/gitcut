@@ -1,6 +1,6 @@
 {
   "query": {
-    "main": {
+    "src": {
       "remoteUrl": "",
       "branch": "",
       "paths": ["src"]
