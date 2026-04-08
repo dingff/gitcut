@@ -332,12 +332,12 @@ const handles = {
           message: 'Select commit message language:',
           choices: [
             {
-              name: `中文: ${generated.zh}`,
-              value: generated.zh,
+              name: generated.en,
+              value: generated.en,
             },
             {
-              name: `English: ${generated.en}`,
-              value: generated.en,
+              name: generated.zh,
+              value: generated.zh,
             },
           ],
         })
