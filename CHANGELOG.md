@@ -1,5 +1,13 @@
 # Changelog
 
+# [2.1.0](https://github.com/dingff/gitcut/compare/v2.0.1...v2.1.0) (2026-04-08)
+
+### Features
+
+- **cli:** remove config file and emoji support, simplify initialization flow ([5035a89](https://github.com/dingff/gitcut/commit/5035a898384b2cac749b8aff596e2a820b45e8d7))
+- **core:** add ollama integration to generate commit messages ([99827fe](https://github.com/dingff/gitcut/commit/99827fe25aaeb69b7123257e81c4d477b23ed284))
+- **ui:** fix commit message language selection display logic ([b157a75](https://github.com/dingff/gitcut/commit/b157a75a1084f395c86ea0cf01b002c5dbcc9514))
+
 ## [2.0.1](https://github.com/dingff/gitcut/compare/v2.0.0...v2.0.1) (2026-03-24)
 
 ### Bug Fixes
