@@ -35,19 +35,19 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.3.0",
+    "@inquirer/prompts": "^8.4.1",
     "ora": "^9.3.0",
     "picocolors": "^1.1.1",
     "string-width": "^8.2.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^20.4.3",
-    "@commitlint/config-conventional": "^20.4.3",
-    "@release-it/conventional-changelog": "^10.0.5",
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
+    "@release-it/conventional-changelog": "^10.0.6",
     "husky": "^9.1.7",
-    "lint-staged": "^16.3.3",
-    "oxfmt": "^0.37.0",
-    "oxlint": "^1.52.0",
+    "lint-staged": "^16.4.0",
+    "oxfmt": "^0.44.0",
+    "oxlint": "^1.59.0",
     "release-it": "^19.2.4"
   },
   "lint-staged": {
