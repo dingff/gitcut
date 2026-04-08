@@ -31,6 +31,7 @@ gt bh feature/awesome-feature
 | -------------------------------------------- | ---------------------------------------------------- | -------------------------------------- |
 | `gt query <remote> <branch> <paths...>`      | Pull specific files/directories from a remote branch | `gt query origin main src/components`  |
 | `gt submit "<message>"` / `gt s "<message>"` | Commit and push in one step                          | `gt submit "fix: resolve login issue"` |
+| `gt submit` / `gt s`                         | Auto-generate commit message with local Ollama       | `gt submit`                            |
 | `gt bh [name]`                               | Create and push a branch (interactive supported)     | `gt bh feature/new-checkout`           |
 | `gt bh -l`                                   | List remote branches                                 | `gt bh -l`                             |
 | `gt bh -e`                                   | Create branch with emoji template                    | `gt bh -e`                             |
@@ -60,6 +61,13 @@ Run without arguments to enter interactive mode.
 ```bash
 gt submit "feat: add new feature"
 ```
+
+When run without a message, Gitcut will use Ollama to generate commit messages:
+
+1. Detect models from local Ollama (`http://127.0.0.1:11434`)
+2. Stage changes and send the staged diff to Ollama
+3. Generate both English and Simplified Chinese Conventional Commit messages
+4. Let you pick one message interactively, then commit/pull/push
 
 ## License
 

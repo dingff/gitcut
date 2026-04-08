@@ -116,11 +116,15 @@ const generateCommitMessagesWithOllama = async (diff, model) => {
       'Rules:',
       '- Keep each message to one line.',
       '- Include type and scope when useful (e.g., feat(cli): ...).',
+      '- Use the most appropriate Conventional Commit type from: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.',
+      '- Do not default to feat. Infer the type from the actual diff.',
+      '- Prefer non-feat types when the change is not a new user-facing capability.',
       '- Do not include markdown, code fences, quotes, or explanations.',
       '- Return only valid JSON with keys: zh, en.',
       '- en must be English.',
       '- en subject must start with a lowercase letter.',
       '- zh must be Simplified Chinese.',
+      '- Keep zh and en semantically aligned and use the same commit type.',
       strictZh
         ? '- zh MUST contain Chinese characters. If zh is English, your answer is invalid.'
         : '',
