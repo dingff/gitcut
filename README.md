@@ -16,15 +16,6 @@ npm install -g gitcut
 
 After installation, use the `gt` command as a streamlined alternative to `git`.
 
-## Quick Start
-
-### Run Common Workflows
-
-```bash
-gt submit "feat: support xxx"
-gt bh feature/awesome-feature
-```
-
 ## Command Overview
 
 | Command                                      | Description                                          | Example                                |
