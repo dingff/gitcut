@@ -24,8 +24,7 @@
   },
   "files": [
     "bin/",
-    "index.js",
-    "config.json"
+    "index.js"
   ],
   "type": "module",
   "publishConfig": {

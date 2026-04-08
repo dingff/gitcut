@@ -193,13 +193,6 @@ const inquireBranch = async (remote) => {
 }
 const cmdType = process.argv[2]
 const args = process.argv.slice(3)
-const configPath = path.join(process.cwd(), 'gtconfig.json')
-// Get local config for different commands
-const getConfig = () => {
-  if (!fs.existsSync(configPath)) return
-  const config = fs.readFileSync(configPath, 'utf8')
-  if (config) return JSON.parse(config)[cmdType]
-}
 const handles = {
   '-v': () => {
     const version = JSON.parse(
@@ -207,17 +200,10 @@ const handles = {
     ).version
     console.log(version)
   },
-  '--init': () => {
-    if (fs.existsSync(configPath)) return
-    const defaultConfig = fs.readFileSync(path.join(import.meta.dirname, 'config.json'), 'utf8')
-    fs.writeFileSync(configPath, defaultConfig)
-  },
   query: async () => {
     try {
       let remoteAlias = 'gitcut'
       let [remoteUrl, branch, ...paths] = args
-      const alias = getConfig()
-      if (alias?.[remoteUrl]) ({ remoteUrl, branch, paths } = alias[remoteUrl])
       if (!remoteUrl || !branch) {
         const remotes = (await startSpawnPipe('git', ['remote'], { silent: true }))
           .split('\n')
@@ -279,21 +265,7 @@ const handles = {
     } catch {}
   },
   submit: async () => {
-    const emojis = {
-      feat: ':sparkles:',
-      fix: ':bug:',
-      docs: ':memo:',
-      style: ':art:',
-      refactor: ':hammer:',
-      perf: ':zap:',
-      test: ':white_check_mark:',
-      chore: ':wrench:',
-      ci: ':green_heart:',
-      revert: ':rewind:',
-      build: ':package:',
-    }
     try {
-      const submitConfig = getConfig()
       let msg = args.join(' ')
       let hasAddedFiles = false
       if (!msg) {
@@ -341,14 +313,6 @@ const handles = {
             },
           ],
         })
-      }
-      const msgToken = msg.split(': ')
-      if (msgToken.length > 1 && submitConfig?.emoji === true) {
-        const [commitType, commitInfo] = msgToken
-        const commitEmoji =
-          emojis[Object.keys(emojis).filter((item) => commitType.includes(item))[0]] || ''
-        const space = commitEmoji ? ' ' : ''
-        msg = `${commitType}: ${commitEmoji}${space}${commitInfo}`
       }
       if (!hasAddedFiles) {
         await startSpawn('git', ['add', '.'])
