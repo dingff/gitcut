@@ -94,22 +94,8 @@ const parseOllamaCommitResponse = (rawResponse) => {
   } catch {}
   return null
 }
-const hasChineseChars = (text) => /[\u4e00-\u9fff]/.test(text)
-const normalizeEnglishCommitMessage = (msg) => {
-  const text = String(msg || '').trim()
-  if (!text) return text
-  const sep = ': '
-  const idx = text.indexOf(sep)
-  if (idx < 0) {
-    return text.replace(/[A-Z]/, (c) => c.toLowerCase())
-  }
-  const header = text.slice(0, idx + sep.length)
-  const subject = text.slice(idx + sep.length)
-  const normalizedSubject = subject.replace(/[A-Z]/, (c) => c.toLowerCase())
-  return `${header}${normalizedSubject}`
-}
 const generateCommitMessagesWithOllama = async (diff, model) => {
-  const buildPrompt = (strictZh = false) =>
+  const buildPrompt = () =>
     [
       'You are a senior software engineer writing git commit messages.',
       'Based on the git diff, generate two concise Conventional Commit messages.',
@@ -125,45 +111,36 @@ const generateCommitMessagesWithOllama = async (diff, model) => {
       '- en subject must start with a lowercase letter.',
       '- zh must be Simplified Chinese.',
       '- Keep zh and en semantically aligned and use the same commit type.',
-      strictZh
-        ? '- zh MUST contain Chinese characters. If zh is English, your answer is invalid.'
-        : '',
       '',
       'Git diff:',
       diff,
     ]
       .filter(Boolean)
       .join('\n')
-  for (let i = 0; i < 2; i++) {
-    try {
-      const res = await requestWithTimeout(
-        'http://127.0.0.1:11434/api/generate',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            model,
-            stream: false,
-            format: 'json',
-            options: { temperature: 0.2 },
-            prompt: buildPrompt(i > 0),
-          }),
-        },
-        20000,
-      )
-      if (!res.ok) continue
-      const data = await res.json()
-      const rawText = data?.response?.trim()
-      if (!rawText) continue
-      const parsed = parseOllamaCommitResponse(rawText)
-      if (!parsed?.zh || !parsed?.en) continue
-      if (!hasChineseChars(parsed.zh)) continue
-      return {
-        ...parsed,
-        en: normalizeEnglishCommitMessage(parsed.en),
-      }
-    } catch {}
-  }
+  try {
+    const res = await requestWithTimeout(
+      'http://127.0.0.1:11434/api/generate',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model,
+          stream: false,
+          format: 'json',
+          options: { temperature: 0.2 },
+          prompt: buildPrompt(),
+        }),
+      },
+      20000,
+    )
+    if (!res.ok) return null
+    const data = await res.json()
+    const rawText = data?.response?.trim()
+    if (!rawText) return null
+    const parsed = parseOllamaCommitResponse(rawText)
+    if (!parsed?.zh || !parsed?.en) return null
+    return parsed
+  } catch {}
   return null
 }
 const updateRepo = async () => {

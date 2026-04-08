@@ -1,6 +1,6 @@
 # Gitcut
 
-A modern, interactive Git CLI to simplify your daily workflows.
+A modern, interactive Git CLI to simplify your daily workflows
 
 ## Why
 
