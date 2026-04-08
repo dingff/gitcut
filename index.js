@@ -60,6 +60,108 @@ const startSpawnPipe = (c, p, config = { silent: false }) => {
 const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
+const requestWithTimeout = async (url, options = {}, timeout = 1500) => {
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeout)
+  try {
+    return await fetch(url, {
+      ...options,
+      signal: controller.signal,
+    })
+  } finally {
+    clearTimeout(timer)
+  }
+}
+const getOllamaModels = async () => {
+  try {
+    const res = await requestWithTimeout('http://127.0.0.1:11434/api/tags')
+    if (!res.ok) return []
+    const data = await res.json()
+    return (data?.models || []).map((item) => item?.model || item?.name).filter(Boolean)
+  } catch {
+    return []
+  }
+}
+const parseOllamaCommitResponse = (rawResponse) => {
+  try {
+    const parsed = JSON.parse(rawResponse)
+    if (parsed?.zh && parsed?.en) {
+      return {
+        zh: String(parsed.zh).trim(),
+        en: String(parsed.en).trim(),
+      }
+    }
+  } catch {}
+  return null
+}
+const hasChineseChars = (text) => /[\u4e00-\u9fff]/.test(text)
+const normalizeEnglishCommitMessage = (msg) => {
+  const text = String(msg || '').trim()
+  if (!text) return text
+  const sep = ': '
+  const idx = text.indexOf(sep)
+  if (idx < 0) {
+    return text.replace(/[A-Z]/, (c) => c.toLowerCase())
+  }
+  const header = text.slice(0, idx + sep.length)
+  const subject = text.slice(idx + sep.length)
+  const normalizedSubject = subject.replace(/[A-Z]/, (c) => c.toLowerCase())
+  return `${header}${normalizedSubject}`
+}
+const generateCommitMessagesWithOllama = async (diff, model) => {
+  const buildPrompt = (strictZh = false) =>
+    [
+      'You are a senior software engineer writing git commit messages.',
+      'Based on the git diff, generate two concise Conventional Commit messages.',
+      'Rules:',
+      '- Keep each message to one line.',
+      '- Include type and scope when useful (e.g., feat(cli): ...).',
+      '- Do not include markdown, code fences, quotes, or explanations.',
+      '- Return only valid JSON with keys: zh, en.',
+      '- en must be English.',
+      '- en subject must start with a lowercase letter.',
+      '- zh must be Simplified Chinese.',
+      strictZh
+        ? '- zh MUST contain Chinese characters. If zh is English, your answer is invalid.'
+        : '',
+      '',
+      'Git diff:',
+      diff,
+    ]
+      .filter(Boolean)
+      .join('\n')
+  for (let i = 0; i < 2; i++) {
+    try {
+      const res = await requestWithTimeout(
+        'http://127.0.0.1:11434/api/generate',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model,
+            stream: false,
+            format: 'json',
+            options: { temperature: 0.2 },
+            prompt: buildPrompt(i > 0),
+          }),
+        },
+        20000,
+      )
+      if (!res.ok) continue
+      const data = await res.json()
+      const rawText = data?.response?.trim()
+      if (!rawText) continue
+      const parsed = parseOllamaCommitResponse(rawText)
+      if (!parsed?.zh || !parsed?.en) continue
+      if (!hasChineseChars(parsed.zh)) continue
+      return {
+        ...parsed,
+        en: normalizeEnglishCommitMessage(parsed.en),
+      }
+    } catch {}
+  }
+  return null
+}
 const updateRepo = async () => {
   await startSpawnPipe('git', ['fetch', '--prune'], { silent: true })
 }
@@ -193,9 +295,52 @@ const handles = {
     try {
       const submitConfig = getConfig()
       let msg = args.join(' ')
+      let hasAddedFiles = false
       if (!msg) {
-        console.log(`${ERROR}Usage: gt submit <msg>`)
-        return
+        const models = await getOllamaModels()
+        if (!models.length) {
+          console.log(`${ERROR}Usage: gt submit <msg>`)
+          return
+        }
+        await startSpawn('git', ['add', '.'])
+        hasAddedFiles = true
+        const stagedDiff = (
+          await startSpawnPipe('git', ['diff', '--cached'], { silent: true })
+        ).trim()
+        if (!stagedDiff) {
+          console.log(`${WARN}No changes to commit.`)
+          return
+        }
+        let model = models[0]
+        if (models.length > 1) {
+          model = await select({
+            message: 'Select Ollama model:',
+            choices: models.map((item) => ({
+              name: item,
+              value: item,
+            })),
+          })
+        }
+        const generated = await generateCommitMessagesWithOllama(stagedDiff, model)
+        if (!generated?.zh || !generated?.en) {
+          console.log(
+            `${WARN}Ollama failed to generate commit message, please pass message manually.`,
+          )
+          return
+        }
+        msg = await select({
+          message: 'Select commit message language:',
+          choices: [
+            {
+              name: `中文: ${generated.zh}`,
+              value: generated.zh,
+            },
+            {
+              name: `English: ${generated.en}`,
+              value: generated.en,
+            },
+          ],
+        })
       }
       const msgToken = msg.split(': ')
       if (msgToken.length > 1 && submitConfig?.emoji === true) {
@@ -205,7 +350,9 @@ const handles = {
         const space = commitEmoji ? ' ' : ''
         msg = `${commitType}: ${commitEmoji}${space}${commitInfo}`
       }
-      await startSpawn('git', ['add', '.'])
+      if (!hasAddedFiles) {
+        await startSpawn('git', ['add', '.'])
+      }
       await startSpawn('git', ['commit', '-m', msg])
       await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
