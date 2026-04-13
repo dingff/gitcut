@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.1](https://github.com/dingff/gitcut/compare/v2.1.0...v2.1.1) (2026-04-13)
+
+### Features
+
+- **core:** introduce local LLM support to enhance commit message generation ([7a2b236](https://github.com/dingff/gitcut/commit/7a2b2364c1bfcb5b2a820f1aa3b515cef6a912fa))
+
 # [2.1.0](https://github.com/dingff/gitcut/compare/v2.0.1...v2.1.0) (2026-04-08)
 
 ### Features
