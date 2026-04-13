@@ -142,7 +142,7 @@ const inquireBranch = async (remote) => {
       return `${i + 1}) ${item.replace(`${remote}/`, '')}`
     })
   const rawBranch = await select({
-    message: 'Select a branch',
+    message: 'Select a branch:',
     choices: branches,
     pageSize: 15,
   })
@@ -166,7 +166,7 @@ const handles = {
           .split('\n')
           .filter(Boolean)
         remoteUrl = await select({
-          message: 'Select a remote',
+          message: 'Select a remote:',
           choices: remotes,
         })
         await startSpawnPipe('git', ['fetch', remoteUrl])
@@ -341,11 +341,11 @@ const handles = {
           hotfix: '🐛',
         }
         const type = await select({
-          message: 'Select a branch type',
+          message: 'Select a branch type:',
           choices: ['feature', 'hotfix'],
         })
         const name = await input({
-          message: 'Enter a branch name',
+          message: 'Enter a branch name:',
           validate: (v) => {
             if (v.trim()) {
               return true
@@ -377,7 +377,7 @@ const handles = {
           return `${i + 1}）${item}`
         })
       const selectedCommits = await checkbox({
-        message: 'Select commits to pick',
+        message: 'Select commits to pick:',
         choices: commits,
         pageSize: 15,
         validate: (v) => {
