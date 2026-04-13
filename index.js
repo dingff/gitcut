@@ -7,15 +7,12 @@ import { checkbox, input, select } from '@inquirer/prompts'
 import stringWidth from 'string-width'
 import { createLLM } from 'llm-local'
 
-const error = (s) => colors.bold(colors.red(s))
-const warning = (s) => colors.bold(colors.yellow(s))
-const success = (s) => colors.bold(colors.green(s))
-const info = (s) => colors.cyan(s)
-const gray = (s) => colors.gray(s)
-const getHintPre = (t) => `${gray('[')}${t}${gray(']')} `
-const WARN = getHintPre(warning('WARN'))
-const ERROR = getHintPre(error('ERROR'))
-const OK = getHintPre(success('OK'))
+const getHintPre = (t) => colors.gray('[') + t + colors.gray(']')
+const logger = {
+  warn: (message) => console.log(`${getHintPre(colors.bold(colors.yellow('WARN')))} ${message}`),
+  error: (message) => console.log(`${getHintPre(colors.bold(colors.red('ERROR')))} ${message}`),
+  success: (message) => console.log(`${getHintPre(colors.bold(colors.green('OK')))} ${message}`),
+}
 
 const startSpawn = (c, p, config = { silent: false }) => {
   return new Promise((resolve, reject) => {
@@ -45,7 +42,7 @@ const startSpawnPipe = (c, p, config = { silent: false }) => {
     subprocess.on('close', (code) => {
       if (code !== 0) {
         spinner?.fail()
-        console.log(`${WARN}Uh, something went wrong.`)
+        logger.warn('Uh, something went wrong.')
         reject(stderrData)
       } else {
         spinner?.succeed()
@@ -58,8 +55,8 @@ const startSpawnPipe = (c, p, config = { silent: false }) => {
     })
   })
 }
-const handleSuccess = () => {
-  console.log(`${OK}Success!`)
+const logSuccess = () => {
+  logger.success('Success!')
 }
 const parseCommitResponse = (rawResponse) => {
   const text = String(rawResponse || '').trim()
@@ -221,7 +218,7 @@ const handles = {
         await startSpawn('git', ['checkout', '--', ...excludePaths])
       }
       if (remoteAlias === 'gitcut') await startSpawn('git', ['remote', 'rm', remoteAlias])
-      handleSuccess()
+      logSuccess()
     } catch {}
   },
   submit: async () => {
@@ -235,13 +232,13 @@ const handles = {
           await startSpawnPipe('git', ['diff', '--cached'], { silent: true })
         ).trim()
         if (!stagedDiff) {
-          console.log(`${WARN}No changes to commit.`)
+          logger.warn('No changes to commit.')
           return
         }
         const llm = await createLLM()
         const providers = llm.listProviders()
         if (!providers.length) {
-          console.log(`${ERROR}No local LLM provider available.`)
+          logger.error('No local LLM provider available.')
           return
         }
         let provider = providers[0]
@@ -256,7 +253,7 @@ const handles = {
         }
         const models = llm.listModels(provider)
         if (!models.length) {
-          console.log(`${ERROR}No models available for provider: ${provider}`)
+          logger.error(`No models available for provider: ${provider}`)
           return
         }
         let model = models[0]
@@ -298,7 +295,7 @@ const handles = {
       await startSpawn('git', ['commit', '-m', msg])
       await startSpawn('git', ['pull'])
       await startSpawn('git', ['push'])
-      handleSuccess()
+      logSuccess()
     } catch {}
   },
   rc: async () => {
@@ -306,7 +303,7 @@ const handles = {
       await startSpawn('git', ['add', '.'])
       await startSpawn('git', ['rebase', '--continue'])
       await startSpawn('git', ['push'])
-      handleSuccess()
+      logSuccess()
     } catch {}
   },
   bh: async () => {
@@ -330,7 +327,7 @@ const handles = {
           .split('\n')
           .filter(Boolean)
           .join('\n')
-        console.log(info(branches))
+        console.log(colors.cyan(branches))
         return
       }
       let showEmoji = false
@@ -362,7 +359,7 @@ const handles = {
       }
       await startSpawn('git', ['checkout', '-b', branch])
       await startSpawn('git', ['push', '-u', 'origin', branch])
-      handleSuccess()
+      logSuccess()
     } catch {}
   },
   cp: async () => {
@@ -392,7 +389,7 @@ const handles = {
       })
       const hashes = selectedCommits.map((item) => item.split(' ')[0].split('）')[1])
       await startSpawn('git', ['cherry-pick', ...hashes.reverse()])
-      handleSuccess()
+      logSuccess()
     } catch {}
   },
   mg: async () => {
