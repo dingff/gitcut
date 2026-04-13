@@ -11,6 +11,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^8.4.1
         version: 8.4.1(@types/node@22.14.0)
+      llm-local:
+        specifier: ^0.1.0
+        version: 0.1.0
       ora:
         specifier: ^9.3.0
         version: 9.3.0
@@ -1235,6 +1238,10 @@ packages:
   listr2@9.0.5:
     resolution: {integrity: sha512-ME4Fb83LgEgwNw96RKNvKV4VTLuXfoKudAmm2lP8Kk87KaMK0/Xrx/aAkMWmT8mDb+3MlFDspfbCs7adjRxA2g==}
     engines: {node: '>=20.0.0'}
+
+  llm-local@0.1.0:
+    resolution: {integrity: sha512-Sh1sivpve9/cTtTmiouNpbuYG+Vrs3v+d7Cihrsg/bvEMy/YkYXYe/j46PLmL46eCJ+6gbXBEn08O2jCf9er3g==}
+    hasBin: true
 
   lodash.camelcase@4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
@@ -2803,6 +2810,10 @@ snapshots:
       log-update: 6.1.0
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
+
+  llm-local@0.1.0:
+    dependencies:
+      picocolors: 1.1.1
 
   lodash.camelcase@4.3.0: {}
 

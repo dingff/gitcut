@@ -5,6 +5,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { checkbox, input, select } from '@inquirer/prompts'
 import stringWidth from 'string-width'
+import { createLLM } from 'llm-local'
 
 const error = (s) => colors.bold(colors.red(s))
 const warning = (s) => colors.bold(colors.yellow(s))
@@ -60,31 +61,22 @@ const startSpawnPipe = (c, p, config = { silent: false }) => {
 const handleSuccess = () => {
   console.log(`${OK}Success!`)
 }
-const requestWithTimeout = async (url, options = {}, timeout = 1500) => {
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeout)
+const parseCommitResponse = (rawResponse) => {
+  const text = String(rawResponse || '').trim()
+  if (!text) return null
   try {
-    return await fetch(url, {
-      ...options,
-      signal: controller.signal,
-    })
-  } finally {
-    clearTimeout(timer)
-  }
-}
-const getOllamaModels = async () => {
+    const parsed = JSON.parse(text)
+    if (parsed?.zh && parsed?.en) {
+      return {
+        zh: String(parsed.zh).trim(),
+        en: String(parsed.en).trim(),
+      }
+    }
+  } catch {}
+  const match = text.match(/\{[\s\S]*\}/)
+  if (!match) return null
   try {
-    const res = await requestWithTimeout('http://127.0.0.1:11434/api/tags')
-    if (!res.ok) return []
-    const data = await res.json()
-    return (data?.models || []).map((item) => item?.model || item?.name).filter(Boolean)
-  } catch {
-    return []
-  }
-}
-const parseOllamaCommitResponse = (rawResponse) => {
-  try {
-    const parsed = JSON.parse(rawResponse)
+    const parsed = JSON.parse(match[0])
     if (parsed?.zh && parsed?.en) {
       return {
         zh: String(parsed.zh).trim(),
@@ -94,7 +86,7 @@ const parseOllamaCommitResponse = (rawResponse) => {
   } catch {}
   return null
 }
-const generateCommitMessagesWithOllama = async (diff, model) => {
+const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
   const buildPrompt = () =>
     [
       'You are a senior software engineer writing git commit messages.',
@@ -103,8 +95,7 @@ const generateCommitMessagesWithOllama = async (diff, model) => {
       '- Keep each message to one line.',
       '- Include type and scope when useful (e.g., feat(cli): ...).',
       '- Use the most appropriate Conventional Commit type from: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert.',
-      '- Do not default to feat. Infer the type from the actual diff.',
-      '- Prefer non-feat types when the change is not a new user-facing capability.',
+      '- If the change is breaking, append ! after the type or type(scope) (e.g., refactor!: ... or feat(api)!: ...).',
       '- Do not include markdown, code fences, quotes, or explanations.',
       '- Return only valid JSON with keys: zh, en.',
       '- en must be English.',
@@ -118,26 +109,14 @@ const generateCommitMessagesWithOllama = async (diff, model) => {
       .filter(Boolean)
       .join('\n')
   try {
-    const res = await requestWithTimeout(
-      'http://127.0.0.1:11434/api/generate',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model,
-          stream: false,
-          format: 'json',
-          options: { temperature: 0.2 },
-          prompt: buildPrompt(),
-        }),
-      },
-      20000,
-    )
-    if (!res.ok) return null
-    const data = await res.json()
-    const rawText = data?.response?.trim()
-    if (!rawText) return null
-    const parsed = parseOllamaCommitResponse(rawText)
+    const response = await llm.generate({
+      provider,
+      model,
+      prompt: buildPrompt(),
+      temperature: 0.2,
+      format: 'json',
+    })
+    const parsed = parseCommitResponse(response?.content)
     if (!parsed?.zh || !parsed?.en) return null
     return parsed
   } catch {}
@@ -250,11 +229,6 @@ const handles = {
       let msg = args.join(' ')
       let hasAddedFiles = false
       if (!msg) {
-        const models = await getOllamaModels()
-        if (!models.length) {
-          console.log(`${ERROR}Usage: gt submit <msg>`)
-          return
-        }
         await startSpawn('git', ['add', '.'])
         hasAddedFiles = true
         const stagedDiff = (
@@ -264,23 +238,46 @@ const handles = {
           console.log(`${WARN}No changes to commit.`)
           return
         }
+        const llm = await createLLM()
+        const providers = llm.listProviders()
+        if (!providers.length) {
+          console.log(`${ERROR}No local LLM provider available.`)
+          return
+        }
+        let provider = providers[0]
+        if (providers.length > 1) {
+          provider = await select({
+            message: 'Select LLM provider:',
+            choices: providers.map((item) => ({
+              name: item,
+              value: item,
+            })),
+          })
+        }
+        const models = llm.listModels(provider)
+        if (!models.length) {
+          console.log(`${ERROR}No models available for provider: ${provider}`)
+          return
+        }
         let model = models[0]
         if (models.length > 1) {
           model = await select({
-            message: 'Select Ollama model:',
+            message: `Select model:`,
             choices: models.map((item) => ({
               name: item,
               value: item,
             })),
           })
         }
-        const generated = await generateCommitMessagesWithOllama(stagedDiff, model)
+        const generatingSpinner = ora('Generating commit message...').start()
+        const generated = await generateCommitMessagesWithLLM(llm, stagedDiff, provider, model)
         if (!generated?.zh || !generated?.en) {
-          console.log(
-            `${WARN}Ollama failed to generate commit message, please pass message manually.`,
+          generatingSpinner.fail(
+            'LLM failed to generate commit message, please pass message manually.',
           )
           return
         }
+        generatingSpinner.stop()
         msg = await select({
           message: 'Select commit message language:',
           choices: [
