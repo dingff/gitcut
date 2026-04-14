@@ -174,7 +174,7 @@ const inquireBranch = async (remote) => {
       return `${i + 1}) ${item.replace(`${remote}/`, '')}`
     })
   const rawBranch = await select({
-    message: 'Select a branch:',
+    message: 'Select branch:',
     choices: branches,
     pageSize: 15,
   })
@@ -197,7 +197,7 @@ const handles = {
         .split('\n')
         .filter(Boolean)
       remoteUrl = await select({
-        message: 'Select a remote:',
+        message: 'Select remote:',
         choices: remotes,
       })
       await startSpawnPipe('git', ['fetch', remoteUrl])
@@ -271,7 +271,7 @@ const handles = {
       let provider = providers[0]
       if (providers.length > 1) {
         provider = await select({
-          message: 'Select an LLM provider:',
+          message: 'Select LLM provider:',
           choices: providers.map((item) => ({
             name: item,
             value: item,
@@ -286,7 +286,7 @@ const handles = {
       let model = models[0]
       if (models.length > 1) {
         model = await select({
-          message: 'Select a model:',
+          message: 'Select model:',
           choices: models.map((item) => ({
             name: item,
             value: item,
@@ -303,7 +303,7 @@ const handles = {
       }
       generatingSpinner.stop()
       msg = await select({
-        message: 'Select a commit message language:',
+        message: 'Select commit message language:',
         choices: [
           {
             name: generated.en,
@@ -364,11 +364,11 @@ const handles = {
         hotfix: '🐛',
       }
       const type = await select({
-        message: 'Select a branch type:',
+        message: 'Select branch type:',
         choices: ['feature', 'hotfix'],
       })
       const name = await input({
-        message: 'Enter a branch name:',
+        message: 'Enter branch name:',
         validate: (v) => {
           if (v.trim()) {
             return true
