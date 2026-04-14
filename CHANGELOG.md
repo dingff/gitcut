@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.1.3](https://github.com/dingff/gitcut/compare/v2.1.2...v2.1.3) (2026-04-14)
+
+### Bug Fixes
+
+- **ui:** improve prompt messages and validation ([482828d](https://github.com/dingff/gitcut/commit/482828d7ea965bb19c5c2091ba120551f14d5401))
+
+### Features
+
+- **ui:** improve selector prompt messages ([dff35f2](https://github.com/dingff/gitcut/commit/dff35f22f0910b4f8a6f0427477109a6aba083e3))
+- **utils:** add error handling and utility functions for prompt and spawn operations ([4fe561b](https://github.com/dingff/gitcut/commit/4fe561b2aae20e051ba8a35b4eb764d2ef28fc9d))
+
 ## [2.1.2](https://github.com/dingff/gitcut/compare/v2.1.1...v2.1.2) (2026-04-13)
 
 ## [2.1.1](https://github.com/dingff/gitcut/compare/v2.1.0...v2.1.1) (2026-04-13)
