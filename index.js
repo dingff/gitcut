@@ -254,7 +254,9 @@ const handles = {
       await startSpawn('git', ['add', '.'])
       hasAddedFiles = true
       const stagedDiff = (
-        await startSpawnPipe('git', ['diff', '--cached'], { silent: true })
+        await startSpawnPipe('git', ['diff', '--cached', '-U1', '--no-color', '--no-prefix'], {
+          silent: true,
+        })
       ).trim()
       if (!stagedDiff) {
         logger.warn('No changes to commit.')
