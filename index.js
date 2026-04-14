@@ -99,8 +99,8 @@ const parseCommitResponse = (rawResponse) => {
     const parsed = JSON.parse(text)
     if (parsed?.zh && parsed?.en) {
       return {
-        zh: String(parsed.zh).trim(),
-        en: String(parsed.en).trim(),
+        zh: parsed.zh.trim(),
+        en: parsed.en.trim(),
       }
     }
   } catch {}
@@ -110,8 +110,8 @@ const parseCommitResponse = (rawResponse) => {
     const parsed = JSON.parse(match[0])
     if (parsed?.zh && parsed?.en) {
       return {
-        zh: String(parsed.zh).trim(),
-        en: String(parsed.en).trim(),
+        zh: parsed.zh.trim(),
+        en: parsed.en.trim(),
       }
     }
   } catch {}
