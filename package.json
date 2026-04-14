@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
-    "llm-local": "^0.1.0",
+    "llm-local": "^0.1.1",
     "ora": "^9.3.0",
     "picocolors": "^1.1.1",
     "string-width": "^8.2.0"
@@ -47,8 +47,8 @@
     "@release-it/conventional-changelog": "^10.0.6",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "oxfmt": "^0.44.0",
-    "oxlint": "^1.59.0",
+    "oxfmt": "^0.45.0",
+    "oxlint": "^1.60.0",
     "release-it": "^19.2.4"
   },
   "lint-staged": {
