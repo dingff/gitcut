@@ -129,7 +129,7 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       '{ "en": "message", "zh": "message" }',
       '',
       'Rules:',
-      '1. "en" must be a single English commit message and start with lowercase.',
+      '1. "en" must be a single English commit message and start with a lowercase letter.',
       '2. "zh" must be a single Simplified Chinese commit message.',
       '3. en and zh must have the same meaning and MUST use identical commit type and scope.',
       '4. Use Conventional Commit format (type(scope): subject).',
@@ -204,12 +204,12 @@ const handles = {
       branch = await inquireBranch(remoteUrl)
       paths = (
         await input({
-          message: 'Enter the file paths:',
+          message: 'Enter file paths (space-separated):',
           validate: (v) => {
             if (v.trim()) {
               return true
             }
-            return 'Please enter a valid path'
+            return 'Please enter at least one valid file path.'
           },
         })
       )
@@ -271,7 +271,7 @@ const handles = {
       let provider = providers[0]
       if (providers.length > 1) {
         provider = await select({
-          message: 'Select LLM provider:',
+          message: 'Select an LLM provider:',
           choices: providers.map((item) => ({
             name: item,
             value: item,
@@ -286,7 +286,7 @@ const handles = {
       let model = models[0]
       if (models.length > 1) {
         model = await select({
-          message: `Select model:`,
+          message: 'Select a model:',
           choices: models.map((item) => ({
             name: item,
             value: item,
@@ -297,13 +297,13 @@ const handles = {
       const generated = await generateCommitMessagesWithLLM(llm, stagedDiff, provider, model)
       if (!generated?.zh || !generated?.en) {
         generatingSpinner.fail(
-          'LLM failed to generate commit message, please pass message manually.',
+          'LLM failed to generate a commit message, please provide one manually.',
         )
         return
       }
       generatingSpinner.stop()
       msg = await select({
-        message: 'Select commit message language:',
+        message: 'Select a commit message language:',
         choices: [
           {
             name: generated.en,
@@ -373,7 +373,7 @@ const handles = {
           if (v.trim()) {
             return true
           }
-          return 'Please enter a valid name'
+          return 'Please enter a valid branch name.'
         },
       })
       const answer = { type, name: name.trim() }
@@ -398,12 +398,12 @@ const handles = {
         return `${i + 1}）${item}`
       })
     const selectedCommits = await checkbox({
-      message: 'Select commits to pick:',
+      message: 'Select commits to cherry-pick:',
       choices: commits,
       pageSize: 15,
       validate: (v) => {
         if (v.length < 1) {
-          return 'You must choose at least one commit'
+          return 'Please select at least one commit.'
         }
         return true
       },
