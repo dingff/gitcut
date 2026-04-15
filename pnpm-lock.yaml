@@ -12,8 +12,8 @@ importers:
         specifier: ^8.4.1
         version: 8.4.1(@types/node@22.14.0)
       llm-local:
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       ora:
         specifier: ^9.3.0
         version: 9.3.0
@@ -1239,8 +1239,8 @@ packages:
     resolution: {integrity: sha512-ME4Fb83LgEgwNw96RKNvKV4VTLuXfoKudAmm2lP8Kk87KaMK0/Xrx/aAkMWmT8mDb+3MlFDspfbCs7adjRxA2g==}
     engines: {node: '>=20.0.0'}
 
-  llm-local@0.1.1:
-    resolution: {integrity: sha512-eEsLGSde5/knG+9IAZTVqNirJOoFrzv1/nduRb7OxfdpJt7RYYZ3eQ/9r0BAQ5L9qQ98ak26gStJi4+VLFTiSA==}
+  llm-local@0.1.2:
+    resolution: {integrity: sha512-Qc3jcaAPBakdhcHe0IDvJAgyRZNQq86iMope2RKQJFRQw6lmJ8zCxxtmjikwuKBLNIvPxCUK97qR2zEZEd+V3Q==}
     hasBin: true
 
   lodash.camelcase@4.3.0:
@@ -2811,7 +2811,7 @@ snapshots:
       rfdc: 1.4.1
       wrap-ansi: 9.0.0
 
-  llm-local@0.1.1:
+  llm-local@0.1.2:
     dependencies:
       picocolors: 1.1.1
 
