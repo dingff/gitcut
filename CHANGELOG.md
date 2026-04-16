@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.5](https://github.com/dingff/gitcut/compare/v2.1.4...v2.1.5) (2026-04-16)
+
+### Bug Fixes
+
+- **index:** correct error messages and spinner text ([d2f43f6](https://github.com/dingff/gitcut/commit/d2f43f68861c2b0b4f60db277409109e0aa54989))
+
 ## [2.1.4](https://github.com/dingff/gitcut/compare/v2.1.3...v2.1.4) (2026-04-16)
 
 ### Bug Fixes
