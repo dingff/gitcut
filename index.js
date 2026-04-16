@@ -146,6 +146,7 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
     prompt: buildPrompt(),
     temperature: 0.2,
     format: 'json',
+    think: !model.includes('qwen'),
   })
   const parsed = parseCommitResponse(response?.content)
   if (!parsed?.zh || !parsed?.en) return null
