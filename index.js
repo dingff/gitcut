@@ -266,7 +266,7 @@ const handles = {
       const llm = await createLLM()
       const providers = llm.listProviders()
       if (!providers.length) {
-        logger.error('No local LLM provider available.')
+        logger.error('No LLM providers available.')
         return
       }
       let provider = providers[0]
@@ -281,7 +281,7 @@ const handles = {
       }
       const models = llm.listModels(provider)
       if (!models.length) {
-        logger.error(`No models available for provider: ${provider}`)
+        logger.error(`No models available for ${provider}.`)
         return
       }
       let model = models[0]
@@ -297,14 +297,12 @@ const handles = {
       const generatingSpinner = ora('Generating commit message...').start()
       const generated = await generateCommitMessagesWithLLM(llm, stagedDiff, provider, model)
       if (!generated?.zh || !generated?.en) {
-        generatingSpinner.fail(
-          'LLM failed to generate a commit message, please provide one manually.',
-        )
+        generatingSpinner.fail('Failed to generate commit message.')
         return
       }
       generatingSpinner.stop()
       msg = await select({
-        message: 'Select commit message language:',
+        message: 'Select language for commit message:',
         choices: [
           {
             name: generated.en,
