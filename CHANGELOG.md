@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.4](https://github.com/dingff/gitcut/compare/v2.1.3...v2.1.4) (2026-04-16)
+
+### Bug Fixes
+
+- **core:** handle unstaged changes and improve error handling ([08935e9](https://github.com/dingff/gitcut/commit/08935e9505f1fe4ddc56d8abfbb501dde5b4fbb3))
+- **index:** add think field to exclude qwen models ([9232547](https://github.com/dingff/gitcut/commit/9232547359fccf830bd39230a7a2999daa34a336))
+
 ## [2.1.3](https://github.com/dingff/gitcut/compare/v2.1.2...v2.1.3) (2026-04-14)
 
 ### Bug Fixes
