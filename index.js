@@ -13,18 +13,6 @@ const logger = {
   error: (message) => console.log(`${getHintPre(colors.bold(colors.red('ERROR')))} ${message}`),
   success: (message) => console.log(`${getHintPre(colors.bold(colors.green('OK')))} ${message}`),
 }
-const isPromptAbortError = (err) => {
-  const message = String(err?.message || '')
-  return (
-    err?.name === 'ExitPromptError' || message.includes('User force closed the prompt with SIGINT')
-  )
-}
-const handleTopLevelError = (err) => {
-  if (isPromptAbortError(err)) {
-    return
-  }
-  throw err
-}
 
 const startSpawn = (c, p, config = { silent: false }) => {
   return new Promise((resolve, reject) => {
@@ -250,10 +238,22 @@ const handles = {
   },
   submit: async () => {
     let msg = args.join(' ')
-    let hasAddedFiles = false
+    const unstagedDiffNames = (
+      await startSpawnPipe('git', ['diff', '--name-only'], { silent: true })
+    ).trim()
+    if (unstagedDiffNames) {
+      const shouldStageAll = await select({
+        message: 'You have unstaged changes. Stage them?',
+        choices: [
+          { name: 'Yes, stage and commit', value: true },
+          { name: 'No, commit staged only', value: false },
+        ],
+      })
+      if (shouldStageAll) {
+        await startSpawn('git', ['add', '.'])
+      }
+    }
     if (!msg) {
-      await startSpawn('git', ['add', '.'])
-      hasAddedFiles = true
       const stagedDiff = (
         await startSpawnPipe('git', ['diff', '--cached', '-U1', '--no-color', '--no-prefix'], {
           silent: true,
@@ -316,9 +316,6 @@ const handles = {
           },
         ],
       })
-    }
-    if (!hasAddedFiles) {
-      await startSpawn('git', ['add', '.'])
     }
     await startSpawn('git', ['commit', '-m', msg])
     await startSpawn('git', ['pull'])
@@ -499,7 +496,7 @@ if (!cmdType) {
   process.exit(0)
 }
 if (handles[cmdType]) {
-  handles[cmdType]().catch(handleTopLevelError)
+  handles[cmdType]().catch(() => {})
 } else {
-  startSpawn('git', [cmdType, ...args]).catch(handleTopLevelError)
+  startSpawn('git', [cmdType, ...args]).catch(() => {})
 }
