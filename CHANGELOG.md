@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.6](https://github.com/dingff/gitcut/compare/v2.1.5...v2.1.6) (2026-04-20)
+
+### Bug Fixes
+
+- **rules:** update rule descriptions to use uppercase MUST ([51f972d](https://github.com/dingff/gitcut/commit/51f972de101e4888045cba5803c0f4503007c74c))
+
 ## [2.1.5](https://github.com/dingff/gitcut/compare/v2.1.4...v2.1.5) (2026-04-16)
 
 ### Bug Fixes
