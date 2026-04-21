@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.1.7](https://github.com/dingff/gitcut/compare/v2.1.6...v2.1.7) (2026-04-21)
+
+### Bug Fixes
+
+- **rules:** update instruction list formatting and constraints ([6009bd1](https://github.com/dingff/gitcut/commit/6009bd1e5fbf863547f2068e2800fd91cfd3d524))
+
 ## [2.1.6](https://github.com/dingff/gitcut/compare/v2.1.5...v2.1.6) (2026-04-20)
 
 ### Bug Fixes
