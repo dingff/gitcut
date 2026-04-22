@@ -131,7 +131,6 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       '- "en" and "zh" MUST share the SAME type and scope — copy them character-for-character, do NOT translate.',
       '- "en" subject MUST start with a lowercase letter.',
       '- "zh" subject MUST contain Chinese characters.',
-      '- Keep each message to ONE line only.',
       '- Both messages must NOT contain double quotes or newlines.',
       '',
       'Git diff:',
