@@ -108,7 +108,7 @@ const parseCommitResponse = (rawResponse) => {
 const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
   const buildPrompt = () =>
     [
-      'You are a deterministic JSON generator. Only output valid JSON. No explanation.',
+      'You are a JSON-only output machine. Output raw JSON with no markdown, no explanation, no preamble.',
       '',
       'Task:',
       'Generate ONE Conventional Commit message based on the git diff.',
@@ -116,15 +116,23 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       'Output EXACTLY in this JSON format:',
       '{ "en": "message", "zh": "message" }',
       '',
+      'Example (do NOT copy this, it is only to show the format):',
+      '{ "en": "fix(blob-cache): resolve stale entry eviction", "zh": "fix(blob-cache): 修复过期条目未被清除的问题" }',
+      '',
       'Rules:',
-      '- "en" MUST be a single English commit message and start with a lowercase letter.',
-      '- "zh" MUST be a single Simplified Chinese commit message (must contain Chinese characters).',
+      '- Use Conventional Commit format: type(scope): subject.',
+      '- type MUST be one of: feat, fix, docs, style, refactor, perf, test, chore, ci, build.',
+      '- The scope MUST follow ALL of these rules:',
+      '  1. MUST be lowercase.',
+      '  2. MUST be a single word if possible; use kebab-case (words separated by hyphens) only when a single word is insufficient.',
+      '  3. MUST be 2-15 characters long.',
+      '  4. MUST be a concise module or feature name (NOT a sentence).',
+      '  5. MUST NOT contain verbs (only nouns or noun phrases).',
+      '- "en" and "zh" MUST share the SAME type and scope — copy them character-for-character, do NOT translate.',
+      '- "en" subject MUST start with a lowercase letter.',
+      '- "zh" subject MUST contain Chinese characters.',
       '- Keep each message to ONE line only.',
-      '- "en" and "zh" MUST have identical meaning, type, and scope.',
-      '- Use Conventional Commit format (type(scope): subject).',
-      '- The scope MUST be concise and between 2-20 characters.',
-      '- If no clear scope is inferred, use a short generic scope like "core" or "misc".',
-      '- The commit type (feat, fix, refactor, etc.) MUST NOT be translated into Chinese.',
+      '- Both messages must NOT contain double quotes or newlines.',
       '',
       'Git diff:',
       diff.slice(0, 4000),
@@ -135,7 +143,7 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
     prompt: buildPrompt(),
     temperature: 0.2,
     format: 'json',
-    think: !model.includes('qwen'),
+    think: false,
   })
   const parsed = parseCommitResponse(response?.content)
   if (!parsed?.zh || !parsed?.en) return null
@@ -244,7 +252,7 @@ const handles = {
     ).trim()
     if (unstagedDiffNames) {
       const shouldStageAll = await select({
-        message: 'You have unstaged changes. Stage them?',
+        message: 'Unstaged changes detected. Stage them?',
         choices: [
           { name: 'Yes, stage and commit', value: true },
           { name: 'No, commit staged only', value: false },
