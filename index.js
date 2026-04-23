@@ -138,7 +138,7 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       '  2. Choose scope using this priority order:',
       '     a. A standard abbreviation if one exists: api, ui, types, cli, component.',
       '     b. A single short noun.',
-      '     c. kebab-case (words separated by hyphens) compound only when a single word is truly insufficient.',
+      '     c. If multiple words are needed, MUST use kebab-case (words separated by hyphens).',
       '  3. MUST be a concise module or feature name (NOT a sentence, NOT a verb).',
       '- "en" and "zh" MUST share the SAME type and scope — copy them character-for-character, do NOT translate.',
       '- "en" subject MUST start with a lowercase letter.',
