@@ -105,6 +105,17 @@ const parseCommitResponse = (rawResponse) => {
   } catch {}
   return null
 }
+const extractCommitType = (message) => {
+  const matched = String(message || '')
+    .trim()
+    .match(/^([a-zA-Z][\w-]*)(\([^)]+\))?:\s*/)
+  return matched?.[1] || ''
+}
+const replaceCommitType = (message, nextType) => {
+  const normalizedType = String(nextType || '').trim()
+  if (!normalizedType) return message
+  return String(message || '').replace(/^([a-zA-Z][\w-]*)(\([^)]+\))?:\s*/, `${normalizedType}$2: `)
+}
 const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
   const buildPrompt = () =>
     [
@@ -323,6 +334,23 @@ const handles = {
           },
         ],
       })
+      const currentType = extractCommitType(msg)
+      const customType = (
+        await input({
+          message: `Custom commit type? (current: ${currentType}, press Enter to keep)`,
+          validate: (v) => {
+            const typed = v.trim()
+            if (!typed) return true
+            if (!/^[a-zA-Z]+$/.test(typed)) {
+              return 'Type can only contain letters.'
+            }
+            return true
+          },
+        })
+      ).trim()
+      if (customType) {
+        msg = replaceCommitType(msg, customType)
+      }
     }
     await startSpawn('git', ['commit', '-m', msg])
     await startSpawn('git', ['pull'])
