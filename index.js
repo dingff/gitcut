@@ -132,7 +132,7 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       '',
       'Rules:',
       '- Use Conventional Commit format: type(scope): subject.',
-      '- type MUST be one of: feat, fix, docs, style, refactor, perf, test, chore, ci, build.',
+      '- type MUST be one of: feat, fix, docs, refactor, perf, test, chore, ci, build.',
       '- The scope MUST follow ALL of these rules:',
       '  1. MUST be lowercase.',
       '  2. Choose scope using this priority order:',
