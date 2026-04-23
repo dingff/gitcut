@@ -341,8 +341,8 @@ const handles = {
           validate: (v) => {
             const typed = v.trim()
             if (!typed) return true
-            if (!/^[a-zA-Z]+$/.test(typed)) {
-              return 'Type can only contain letters.'
+            if (!/^[a-z]+$/.test(typed)) {
+              return 'Type can only contain lowercase letters.'
             }
             return true
           },
