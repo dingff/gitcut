@@ -338,7 +338,7 @@ const handles = {
       const currentType = extractCommitType(msg)
       const customType = (
         await input({
-          message: `Custom commit type? (current: ${currentType}, press Enter to keep)`,
+          message: `Custom commit type (current: ${currentType}, press Enter to keep):`,
           validate: (v) => {
             const typed = v.trim()
             if (!typed) return true
@@ -354,7 +354,7 @@ const handles = {
       }
       const customScope = (
         await input({
-          message: 'Add commit scope? (press Enter to skip)',
+          message: 'Commit scope (press Enter to skip):',
           validate: (v) => {
             const typed = v.trim()
             if (!typed) return true
