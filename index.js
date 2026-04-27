@@ -116,6 +116,14 @@ const replaceCommitType = (message, nextType) => {
   if (!normalizedType) return message
   return String(message || '').replace(/^([a-zA-Z][\w-]*)(\([^)]+\))?:\s*/, `${normalizedType}$2: `)
 }
+const replaceCommitScope = (message, nextScope) => {
+  const normalizedScope = String(nextScope || '').trim()
+  if (!normalizedScope) return message
+  return String(message || '').replace(
+    /^([a-zA-Z][\w-]*)(\([^)]+\))?:\s*/,
+    `${'$1'}(${normalizedScope}): `,
+  )
+}
 const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
   const buildPrompt = () =>
     [
@@ -128,18 +136,12 @@ const generateCommitMessagesWithLLM = async (llm, diff, provider, model) => {
       '{ "en": "message", "zh": "message" }',
       '',
       'Example (do NOT copy this, it is only to show the format):',
-      '{ "en": "fix(blob-cache): resolve stale entry eviction", "zh": "fix(blob-cache): 修复过期条目未被清除的问题" }',
+      '{ "en": "fix: resolve stale cache entry eviction", "zh": "fix: 修复过期缓存条目未被清除的问题" }',
       '',
       'Rules:',
-      '- Use Conventional Commit format: type(scope): subject.',
+      '- Use Conventional Commit format: type: subject.',
       '- type MUST be one of: feat, fix, docs, refactor, perf, test, chore, ci, build.',
-      '- The scope MUST follow ALL of these rules:',
-      '  1. MUST be a concise module or feature name — not a sentence, not a verb phrase.',
-      '  2. Choose the scope name by this decision order:',
-      '     a. Use a recognized abbreviation if one exists (e.g. api, ui, cli, types).',
-      '     b. Otherwise, use a single short noun.',
-      '     c. If a single noun is insufficient, use kebab-case (e.g. auth-flow, rate-limit).',
-      '- "en" and "zh" MUST share the SAME type and scope — copy them character-for-character, do NOT translate.',
+      '- "en" and "zh" MUST share the SAME type — copy it character-for-character, do NOT translate.',
       '- "en" subject MUST start with a lowercase letter.',
       '- "zh" subject MUST contain Chinese characters.',
       '- Both messages must NOT contain double quotes or newlines.',
@@ -341,7 +343,7 @@ const handles = {
             const typed = v.trim()
             if (!typed) return true
             if (!/^[a-z]+$/.test(typed)) {
-              return 'Type can only contain lowercase letters.'
+              return 'Type must be lowercase letters only.'
             }
             return true
           },
@@ -349,6 +351,22 @@ const handles = {
       ).trim()
       if (customType) {
         msg = replaceCommitType(msg, customType)
+      }
+      const customScope = (
+        await input({
+          message: 'Add commit scope? (press Enter to skip)',
+          validate: (v) => {
+            const typed = v.trim()
+            if (!typed) return true
+            if (!/^[a-z0-9-]+$/.test(typed)) {
+              return 'Scope must be lowercase letters, numbers, and hyphens only.'
+            }
+            return true
+          },
+        })
+      ).trim()
+      if (customScope) {
+        msg = replaceCommitScope(msg, customScope)
       }
     }
     await startSpawn('git', ['commit', '-m', msg])
