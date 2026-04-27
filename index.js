@@ -403,16 +403,7 @@ const handles = {
       console.log(colors.cyan(branches))
       return
     }
-    let showEmoji = false
-    if (branch === '-e') {
-      showEmoji = true
-      branch = undefined
-    }
     if (!branch) {
-      const emojis = {
-        feature: '🎉',
-        hotfix: '🐛',
-      }
       const type = await select({
         message: 'Select branch type:',
         choices: ['feature', 'hotfix'],
@@ -427,8 +418,7 @@ const handles = {
         },
       })
       const answer = { type, name: name.trim() }
-      const emoji = showEmoji ? emojis[answer.type] : ''
-      branch = `${answer.type}/${answer.name}${emoji}`
+      branch = `${answer.type}/${answer.name}`
     }
     await startSpawn('git', ['checkout', '-b', branch])
     await startSpawn('git', ['push', '-u', 'origin', branch])

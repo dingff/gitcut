@@ -25,7 +25,6 @@ After installation, use the `gt` command as a streamlined alternative to `git`.
 | `gt submit` / `gt s`                         | Auto-generate commit message with a local LLM                                    | `gt submit`                            |
 | `gt bh [name]`                               | Create and push a branch (interactive supported)                                 | `gt bh feature/new-checkout`           |
 | `gt bh -l`                                   | List remote branches                                                             | `gt bh -l`                             |
-| `gt bh -e`                                   | Create branch with emoji template                                                | `gt bh -e`                             |
 | `gt cp`                                      | Interactive cherry-pick                                                          | `gt cp`                                |
 | `gt mg`                                      | Interactive branch merge                                                         | `gt mg`                                |
 | `gt rc`                                      | Continue rebase quickly                                                          | `gt rc`                                |
