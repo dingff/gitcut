@@ -1,6 +1,6 @@
 {
   "name": "gitcut",
-  "version": "2.1.7",
+  "version": "2.2.0",
   "description": "A modern, interactive Git CLI to simplify your daily workflows",
   "keywords": [
     "checkout",

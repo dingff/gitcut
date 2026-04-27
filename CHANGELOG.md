@@ -1,5 +1,24 @@
 # Changelog
 
+# [2.2.0](https://github.com/dingff/gitcut/compare/v2.1.7...v2.2.0) (2026-04-27)
+
+### Bug Fixes
+
+- **prompt:** update system instructions and disable thinking ([253cc0d](https://github.com/dingff/gitcut/commit/253cc0d0622c31d39e064452ea99ee5d5ccef490))
+- remove redundant question marks from input prompts ([addef00](https://github.com/dingff/gitcut/commit/addef0038b3cbb5436aa825bca416460b53ef7e2))
+- **rules:** remove redundant newline rule ([133769d](https://github.com/dingff/gitcut/commit/133769dd9e092403f60a6260206a4ae01db48fd7))
+- **rules:** remove style from type list ([7f17c06](https://github.com/dingff/gitcut/commit/7f17c06ec549166e8354527162ae775142be1c25))
+- **rules:** update scope formatting rule c ([2344d16](https://github.com/dingff/gitcut/commit/2344d168a831649c02f243c7b750db92524b1dbe))
+- **rules:** update scope priority order examples ([17ea7e8](https://github.com/dingff/gitcut/commit/17ea7e89d4c1840a2c22862ef499e2976cbd96b3))
+- **rules:** update scope selection guidelines ([ded7f5b](https://github.com/dingff/gitcut/commit/ded7f5bc04349c571040b3a5bd8debc35ed80f9f))
+- update scope rules ([b7a2b57](https://github.com/dingff/gitcut/commit/b7a2b5703906639482045affb69b109b4e3d135b))
+- **validation:** enforce lowercase type characters ([57fc222](https://github.com/dingff/gitcut/commit/57fc222bd5cd928e6d7649364ac957f109e032be))
+
+### Features
+
+- **commit:** add custom commit type selection ([a5b2279](https://github.com/dingff/gitcut/commit/a5b22790ee6c6ab755690ebd5f63eee775fca862))
+- **core:** add optional commit scope input and validation ([3f26630](https://github.com/dingff/gitcut/commit/3f26630d731f12576e91b966169cc1417c221283))
+
 ## [2.1.7](https://github.com/dingff/gitcut/compare/v2.1.6...v2.1.7) (2026-04-21)
 
 ### Bug Fixes
