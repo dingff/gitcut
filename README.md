@@ -8,6 +8,10 @@ A modern, interactive Git CLI to simplify your daily workflows
 - **Avoid costly mistakes**: interactive confirmations make risky operations like cherry-pick and merge safer.
 - **Keep team history cleaner**: standardized commit and branch workflows improve consistency across contributors.
 
+## Prerequisites
+
+- Node.js 20.19+ or 22.12+
+
 ## Install
 
 ```bash
